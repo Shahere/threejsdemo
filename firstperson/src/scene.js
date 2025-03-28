@@ -20,7 +20,9 @@ class MainScene extends Scene3D {
 
   async create() {
     //setup vars
-    this.scale = 0.5;
+    this.scale = 0.3;
+    this.keyCode = null;
+    this.y = 2;
     // Resize window.
     const resize = () => {
       const newWidth = window.innerWidth;
@@ -40,16 +42,36 @@ class MainScene extends Scene3D {
       "-ground",
       "-orbitControls"
     );
-    this.physics.add.ground({ width: 50, height: 50, depth: 1 });
+    this.physics.add.ground({ width: 20, height: 20, depth: 1 });
 
     // enable physics debug
     this.physics.debug?.enable();
-    this.camera.position.set(0, 2, 0);
+    this.camera.position.set(0, this.y, 0);
 
     this.setupCameraFPS();
+    this.setupKeyBinding();
   }
 
-  update() {}
+  update() {
+    switch (this.keyCode) {
+      case "KeyD":
+        this.camera.translateX(this.scale * 0.5);
+        break;
+      case "KeyA":
+        this.camera.translateX(-this.scale * 0.5);
+        break;
+      case "KeyS":
+        this.camera.translateZ(this.scale * 0.5);
+        break;
+      case "KeyW":
+        this.camera.translateZ(-this.scale * 0.5);
+        break;
+
+      default:
+        break;
+    }
+    this.camera.position.y = this.y;
+  }
 
   setupCameraFPS() {
     this.camera.rotation.order = "YXZ"; // this is not the default
@@ -73,6 +95,15 @@ class MainScene extends Scene3D {
       let y = mouseX / scale;
       return [x, y];
     }
+  }
+
+  setupKeyBinding() {
+    document.addEventListener("keydown", (e) => {
+      this.keyCode = e.code;
+    });
+    document.addEventListener("keyup", (e) => {
+      this.keyCode = null;
+    });
   }
 }
 
