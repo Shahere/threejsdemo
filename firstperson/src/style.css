@@ -1,18 +1,39 @@
 * {
   margin: 0;
   padding: 0;
+  cursor:none;
 }
 
-body{
-  margin: 0 !important;
+.crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-html{
-  padding: 0 !important;
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: black
 }
 
-canvas {
-  display: block;
-  top: 0;
-  left: 0;
+.crosshair::before {
+  width: 2px;
+  height: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.crosshair::after {
+  width: 20px;
+  height: 2px;
+  top: 50%;
+  transform: translateY(-50%);
 }
