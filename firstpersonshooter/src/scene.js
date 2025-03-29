@@ -139,7 +139,7 @@ class MainScene extends Scene3D {
     this.camera.position.y = this.y;
 
     if (this.model) {
-      this.moveGun += 0.03;
+      this.moveGun += 0.02;
       this.model.position.x = 0.4 + Math.sin(this.moveGun) * 0.02; // Side to side
       this.model.position.y = -0.4 + Math.sin(this.moveGun * 2) * 0.01; // Up and down
       //0.4 and not this.model.position.y because the margin get worse and worse if wr move
