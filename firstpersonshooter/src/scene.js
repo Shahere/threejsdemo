@@ -27,6 +27,7 @@ class MainScene extends Scene3D {
     this.loader = new GLTFLoader();
     this.model = null;
     this.moveGun = 0;
+    this.fire = false;
 
     await this.loadGun();
 
@@ -94,6 +95,14 @@ class MainScene extends Scene3D {
       const index = this.userKey.indexOf(e.code);
       this.userKey.splice(index, 1);
     });
+    document.addEventListener("mousedown", (e) => {
+      if (e.buttons != 1) return;
+      this.fire = true;
+    });
+    document.addEventListener("mouseup", (e) => {
+      if (e.buttons != 0) return;
+      this.fire = false;
+    });
   }
 
   async loadGun() {
@@ -143,11 +152,19 @@ class MainScene extends Scene3D {
     });
     this.camera.position.y = this.y;
 
-    if (this.model) {
+    if (this.model && !this.fire) {
+      //on applique pas le mouvement quand on tire
       this.moveGun += 0.02;
       this.model.position.x = 0.4 + Math.sin(this.moveGun) * 0.02; // Side to side
       this.model.position.y = -0.4 + Math.sin(this.moveGun * 2) * 0.01; // Up and down
       //0.4 and not this.model.position.y because the margin get worse and worse if wr move
+    }
+
+    if (this.fire) {
+      this.model.position.z = this.model.position.z + 0.05;
+      setTimeout(() => {
+        this.model.position.z = this.model.position.z - 0.05;
+      }, 100);
     }
   }
 }
