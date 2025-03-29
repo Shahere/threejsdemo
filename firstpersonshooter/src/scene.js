@@ -26,6 +26,9 @@ class MainScene extends Scene3D {
     this.y = 2;
     this.loader = new GLTFLoader();
     this.model = null;
+    this.moveGun = 0;
+
+    await this.loadGun();
 
     // Resize window.
     const resize = () => {
@@ -55,28 +58,6 @@ class MainScene extends Scene3D {
 
     this.setupCameraFPS();
     this.setupKeyBinding();
-    this.loadGun();
-  }
-
-  update() {
-    switch (this.keyCode) {
-      case "KeyD":
-        this.camera.translateX(this.scale * 0.5);
-        break;
-      case "KeyA":
-        this.camera.translateX(-this.scale * 0.5);
-        break;
-      case "KeyS":
-        this.camera.translateZ(this.scale * 0.5);
-        break;
-      case "KeyW":
-        this.camera.translateZ(-this.scale * 0.5);
-        break;
-
-      default:
-        break;
-    }
-    this.camera.position.y = this.y;
   }
 
   setupCameraFPS() {
@@ -112,7 +93,7 @@ class MainScene extends Scene3D {
     });
   }
 
-  loadGun() {
+  async loadGun() {
     this.loader.load(
       "/model/M4A1.glb",
       (gltf) => {
@@ -131,6 +112,38 @@ class MainScene extends Scene3D {
         console.error("Error loading GLB model:", error);
       }
     );
+  }
+
+  getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  update() {
+    switch (this.keyCode) {
+      case "KeyD":
+        this.camera.translateX(this.scale * 0.5);
+        break;
+      case "KeyA":
+        this.camera.translateX(-this.scale * 0.5);
+        break;
+      case "KeyS":
+        this.camera.translateZ(this.scale * 0.5);
+        break;
+      case "KeyW":
+        this.camera.translateZ(-this.scale * 0.5);
+        break;
+
+      default:
+        break;
+    }
+    this.camera.position.y = this.y;
+
+    if (this.model) {
+      this.moveGun += 0.03;
+      this.model.position.x = 0.4 + Math.sin(this.moveGun) * 0.02; // Side to side
+      this.model.position.y = -0.4 + Math.sin(this.moveGun * 2) * 0.01; // Up and down
+      //0.4 and not this.model.position.y because the margin get worse and worse if wr move
+    }
   }
 }
 
