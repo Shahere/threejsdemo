@@ -28,6 +28,7 @@ class MainScene extends Scene3D {
     this.model = null;
     this.moveGun = 0;
     this.fire = false;
+    this.fireTimeout = null;
 
     await this.loadGun();
 
@@ -52,6 +53,23 @@ class MainScene extends Scene3D {
       "-orbitControls"
     );
     this.physics.add.ground({ width: 20, height: 20, depth: 1 });
+
+    this.physics.add.sphere(
+      { radius: 0.5, x: 3, z: -1, y: 3 },
+      { lambert: { color: "hotpink" } }
+    );
+    this.physics.add.sphere(
+      { radius: 0.2, x: 5, z: 4, y: 3 },
+      { lambert: { color: "hotpink" } }
+    );
+    this.physics.add.sphere(
+      { radius: 0.5, x: 3, z: -3, y: 3 },
+      { lambert: { color: "hotpink" } }
+    );
+    this.physics.add.sphere(
+      { radius: 0.3, x: 3, z: 2, y: 3 },
+      { lambert: { color: "hotpink" } }
+    );
 
     // enable physics debug
     this.physics.debug?.enable();
@@ -162,8 +180,9 @@ class MainScene extends Scene3D {
 
     if (this.fire) {
       this.model.position.z = this.model.position.z + 0.05;
-      setTimeout(() => {
+      this.fireTimeout = setTimeout(() => {
         this.model.position.z = this.model.position.z - 0.05;
+        this.fireTimeout = null;
       }, 100);
     }
   }
