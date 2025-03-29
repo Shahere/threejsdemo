@@ -29,6 +29,7 @@ class MainScene extends Scene3D {
     this.moveGun = 0;
     this.fire = false;
     this.fireTimeout = null;
+    this.projectile = { shape: "sphere", radius: 0.05 };
 
     await this.loadGun();
 
@@ -184,6 +185,32 @@ class MainScene extends Scene3D {
         this.model.position.z = this.model.position.z - 0.05;
         this.fireTimeout = null;
       }, 100);
+
+      //get the pointer direction
+      const direction = new THREE.Vector3();
+      this.camera.getWorldDirection(direction);
+      direction.normalize();
+
+      //Add and move a projectile
+      const bullet = this.physics.add.sphere(
+        {
+          radius: 0.01,
+          x: this.camera.position.x,
+          z: this.camera.position.z,
+          y: this.camera.position.y,
+        },
+        { lambert: { color: "black" }, mass: 0.001 }
+      );
+
+      const force = 50;
+      bullet.body.applyImpulse(
+        {
+          x: direction.x * force,
+          y: direction.y * force,
+          z: direction.z * force,
+        },
+        { x: 0, y: 0, z: 0 }
+      );
     }
   }
 }
