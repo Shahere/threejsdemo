@@ -22,7 +22,7 @@ class MainScene extends Scene3D {
   async create() {
     //setup vars
     this.scale = 0.3;
-    this.keyCode = null;
+    this.userKey = new Array();
     this.y = 2;
     this.loader = new GLTFLoader();
     this.model = null;
@@ -86,10 +86,13 @@ class MainScene extends Scene3D {
 
   setupKeyBinding() {
     document.addEventListener("keydown", (e) => {
-      this.keyCode = e.code;
+      if (this.userKey.indexOf(e.code) == -1) {
+        this.userKey.push(e.code);
+      }
     });
     document.addEventListener("keyup", (e) => {
-      this.keyCode = null;
+      const index = this.userKey.indexOf(e.code);
+      this.userKey.splice(index, 1);
     });
   }
 
@@ -119,23 +122,25 @@ class MainScene extends Scene3D {
   }
 
   update() {
-    switch (this.keyCode) {
-      case "KeyD":
-        this.camera.translateX(this.scale * 0.5);
-        break;
-      case "KeyA":
-        this.camera.translateX(-this.scale * 0.5);
-        break;
-      case "KeyS":
-        this.camera.translateZ(this.scale * 0.5);
-        break;
-      case "KeyW":
-        this.camera.translateZ(-this.scale * 0.5);
-        break;
+    this.userKey.forEach((code) => {
+      switch (code) {
+        case "KeyD":
+          this.camera.translateX(this.scale * 0.5);
+          break;
+        case "KeyA":
+          this.camera.translateX(-this.scale * 0.5);
+          break;
+        case "KeyS":
+          this.camera.translateZ(this.scale * 0.5);
+          break;
+        case "KeyW":
+          this.camera.translateZ(-this.scale * 0.5);
+          break;
 
-      default:
-        break;
-    }
+        default:
+          break;
+      }
+    });
     this.camera.position.y = this.y;
 
     if (this.model) {
