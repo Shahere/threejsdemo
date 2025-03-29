@@ -199,10 +199,10 @@ class MainScene extends Scene3D {
           z: this.camera.position.z,
           y: this.camera.position.y,
         },
-        { lambert: { color: "black" }, mass: 0.001 }
+        { lambert: { color: "black" }, mass: 0.0001 }
       );
 
-      const force = 50;
+      const force = 20;
       bullet.body.applyImpulse(
         {
           x: direction.x * force,
