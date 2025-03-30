@@ -1,51 +1,48 @@
-import { Project, Scene3D, PhysicsLoader, THREE } from "enable3d";
+import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-class MainScene extends Scene3D {
-  box;
-  constructor() {
-    //@ts-ignore
-    super("MainScene");
-  }
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+const scene = new THREE.Scene();
+const textureLoader = new THREE.TextureLoader();
+let earth_texture = textureLoader.load("/img/earth_texture.png");
+let earth_texture_night = textureLoader.load("/img/earth_texture_night.png");
+let earth_texture_cloud = textureLoader.load("/img/clouds.jpg");
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+const controls = new OrbitControls(camera, renderer.domElement);
+camera.position.set(0, 0, 30);
 
-  init() {
-    //console.log("Init");
-    this.renderer.setPixelRatio(1);
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-  }
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
 
-  preload() {
-    //console.log("Preload");
-  }
+const geometry = new THREE.SphereGeometry(15, 32, 16);
+const material = new THREE.MeshBasicMaterial({
+  map: earth_texture,
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+sphere.position.set(0, 0, 0);
 
-  async create() {
-    // Resize window.
-    const resize = () => {
-      const newWidth = window.innerWidth;
-      const newHeight = window.innerHeight;
+//DEBUG
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
 
-      this.renderer.setSize(newWidth, newHeight);
-      //@ts-ignore
-      this.camera.aspect = newWidth / newHeight;
-      this.camera.updateProjectionMatrix();
-    };
-
-    window.onresize = resize;
-    resize();
-
-    // set up scene (light, grid, sky, orbitControls)
-    const { camera, ground, lights, orbitControls } = await this.warpSpeed(
-      "-ground",
-      "-orbitControls",
-      "-sky"
-    );
-  }
-
-  update() {}
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+  console.log(camera.position);
 }
 
-let project;
+animate();
 
-PhysicsLoader("lib/ammo/kripken", () => {
-  project = new Project({ scenes: [MainScene], antialias: true });
+let centerButton = document.getElementsByClassName("center")[0];
+centerButton.addEventListener("click", () => {
+  camera.position.set(0, 0, 30);
+  controls.target.set(0, 0, 0);
+  controls.update();
 });
