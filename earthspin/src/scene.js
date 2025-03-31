@@ -21,12 +21,21 @@ camera.position.set(0, 0, 30);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+/*--------------------------------------------- LIGHTS -------------------------------------------------*/
+var light = new THREE.DirectionalLight(0xffffff, 3);
+light.position.set(100000, 0, 0);
+scene.add(light);
+
+scene.add(new THREE.AmbientLight(0xbbbbbb, 0.2));
+/*--------------------------------------------- LIGHTS -------------------------------------------------*/
+
 const geometry = new THREE.SphereGeometry(15, 100, 100);
 const earthMaterial = new THREE.ShaderMaterial({
   uniforms: {
     dayTexture: { value: dayTexture },
     nightTexture: { value: nightTexture },
-    sunDirection: { value: new THREE.Vector3(1.0, 0.0, 0.0) }, // Fake "sun" coming from +X direction
+    cloudTexture: { value: cloudTexture },
+    sunDirection: { value: light.position.normalize() },
   },
   vertexShader: `
     varying vec3 vNormal;
@@ -36,79 +45,36 @@ const earthMaterial = new THREE.ShaderMaterial({
       vNormal = normalize(normal); // Get normal of the vertex
       vUv = uv; // Pass UV coordinates to the fragment shader
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
+    }`,
   fragmentShader: `
-  uniform sampler2D dayTexture;
-  uniform sampler2D nightTexture;
-  uniform vec3 sunDirection;
+    uniform sampler2D dayTexture;
+    uniform sampler2D nightTexture;
+    uniform sampler2D cloudTexture;
+    uniform vec3 sunDirection;
 
-  varying vec3 vNormal;
-  varying vec2 vUv;
+    varying vec3 vNormal;
+    varying vec2 vUv;
 
-  void main() {
-    float lightFactor = dot(vNormal, sunDirection); // -1 (dark side) to 1 (lit side)
-    float mixFactor = smoothstep(-0.2, 0.2, lightFactor); // Smooth transition
+    void main() {
+      float lightFactor = dot(vNormal, sunDirection);
+      float mixFactor = smoothstep(-0.0001, 0.8, lightFactor);
 
-    vec4 dayColor = texture2D(dayTexture, vUv);
-    vec4 nightColor = texture2D(nightTexture, vUv) * 10.9; // Brighten night side
+      vec4 dayColor = texture2D(dayTexture, vUv);
+      vec4 nightColor = texture2D(nightTexture, vUv) * 5.9;
+      vec4 cloudColor = texture2D(cloudTexture, vUv) *0.5;
 
-    gl_FragColor = mix(nightColor, dayColor, mixFactor);
-  }
-`,
+      vec4 earthColor = mix(nightColor, dayColor, mixFactor);
+
+      float mixFactor2 = smoothstep(-0.9, 0.1, lightFactor);
+      gl_FragColor = mix(earthColor, earthColor+cloudColor, mixFactor2);
+    }`,
 });
 
 const sphere = new THREE.Mesh(geometry, earthMaterial);
 scene.add(sphere);
 
-const atmosphereMaterial = new THREE.ShaderMaterial({
-  side: THREE.BackSide,
-  blending: THREE.AdditiveBlending,
-  transparent: true,
-  uniforms: {
-    glowColor: { value: new THREE.Color(0x3399ff) },
-    intensity: { value: 1 },
-    sunDirection: { value: new THREE.Vector3(1.0, 0.0, 0.0) }, // Direction du Soleil
-  },
-  vertexShader: `
-    varying vec3 vNormal;
-    varying vec3 vPosition;
-    
-    void main() {
-      vNormal = normalize(normalMatrix * normal);
-      vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 glowColor;
-    uniform float intensity;
-    uniform vec3 sunDirection;
-
-    varying vec3 vNormal;
-    varying vec3 vPosition;
-
-    void main() {
-      vec3 viewDir = normalize(-vPosition);
-      float fresnel = pow(1.0 - dot(vNormal, viewDir), 3.0);
-
-      // Modulation par la lumière du soleil
-      float lightFactor = clamp(dot(vNormal, sunDirection), 0.0, 1.0);
-      fresnel *= lightFactor; // Réduction du glow dans l'ombre
-
-      gl_FragColor = vec4(glowColor * fresnel * intensity, fresnel * 0.8); // Moins visible
-    }
-  `,
-});
-
-//EFFET DE FRESNET
-const atmosphere = new THREE.Mesh(
-  new THREE.SphereGeometry(15.2, 64, 64),
-  atmosphereMaterial
-);
-scene.add(atmosphere);
-
-const cloudMaterial = new THREE.MeshBasicMaterial({
+/**************************************** CLOUD ************************************************ */
+/*const cloudMaterial = new THREE.MeshBasicMaterial({
   map: cloudTexture,
   transparent: true,
   opacity: 0.2,
@@ -116,7 +82,8 @@ const cloudMaterial = new THREE.MeshBasicMaterial({
 
 const cloudGeometry = new THREE.SphereGeometry(15.1, 64, 64);
 const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-scene.add(clouds);
+scene.add(clouds);*/
+/**************************************** CLOUD ************************************************ */
 
 sphere.position.set(0, 0, 0);
 
