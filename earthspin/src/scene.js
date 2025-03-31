@@ -65,7 +65,7 @@ const earthMaterial = new THREE.ShaderMaterial({
 
       vec4 earthColor = mix(nightColor, dayColor, mixFactor);
 
-      float mixFactor2 = smoothstep(-0.9, 0.1, lightFactor);
+      float mixFactor2 = smoothstep(-0.99999, 0.5, lightFactor);
       gl_FragColor = mix(earthColor, earthColor+cloudColor, mixFactor2);
     }`,
 });
@@ -73,17 +73,37 @@ const earthMaterial = new THREE.ShaderMaterial({
 const sphere = new THREE.Mesh(geometry, earthMaterial);
 scene.add(sphere);
 
-/**************************************** CLOUD ************************************************ */
-/*const cloudMaterial = new THREE.MeshBasicMaterial({
-  map: cloudTexture,
-  transparent: true,
-  opacity: 0.2,
+/**************************************** GLOW ************************************************ */
+const glowMaterial = new THREE.ShaderMaterial({
+  uniforms: {
+    sunDirection: { value: light.position.normalize() },
+  },
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec2 vUv;
+
+    void main() {
+      vNormal = normalize(normal); // Get normal of the vertex
+      vUv = uv; // Pass UV coordinates to the fragment shader
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }`,
+  fragmentShader: `
+      varying vec3 vNormal;
+      uniform vec3 sunDirection;
+
+      void main() {
+        float lightFactor = dot(sunDirection, vNormal);
+        float dotNL = clamp(lightFactor, 0.0, 1.0);
+        float intensity = pow(0.8 - dot(vNormal, vec3(0, 0, 1.0)), 12.0);
+        gl_FragColor = vec4(1, 1.0, 1.0, 1.0) * intensity * dotNL;
+      }`,
 });
 
 const cloudGeometry = new THREE.SphereGeometry(15.1, 64, 64);
-const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-scene.add(clouds);*/
-/**************************************** CLOUD ************************************************ */
+const glow = new THREE.Mesh(cloudGeometry, glowMaterial);
+scene.add(glow);
+glow.position.y = 30; //REMOVE THIS LINE WHEN OK
+/**************************************** GLOW ************************************************ */
 
 sphere.position.set(0, 0, 0);
 
