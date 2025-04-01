@@ -80,7 +80,7 @@ const glowMaterial = new THREE.ShaderMaterial({
   uniforms: {
     sunDirection: { value: light.position.clone().normalize() },
   },
-  side: THREE.BackSide, // Rend la face interne visible
+  //side: THREE.BackSide, // Rend la face interne visible
   transparent: true,
   vertexShader: `
     varying vec3 vNormal;
