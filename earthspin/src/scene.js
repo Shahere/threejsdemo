@@ -76,33 +76,48 @@ scene.add(sphere);
 /**************************************** GLOW ************************************************ */
 const glowMaterial = new THREE.ShaderMaterial({
   uniforms: {
-    sunDirection: { value: light.position.normalize() },
+    sunDirection: { value: light.position.clone().normalize() },
   },
+  side: THREE.BackSide, // Rend la face interne visible
+  transparent: true,
   vertexShader: `
     varying vec3 vNormal;
-    varying vec2 vUv;
+    varying vec3 vPosition;
 
     void main() {
-      vNormal = normalize(normal); // Get normal of the vertex
-      vUv = uv; // Pass UV coordinates to the fragment shader
+      vNormal = normalize(normalMatrix * normal);
+      vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+    
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`,
+    }
+`,
   fragmentShader: `
-      varying vec3 vNormal;
-      uniform vec3 sunDirection;
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    uniform vec3 sunDirection;
 
-      void main() {
-        float lightFactor = dot(sunDirection, vNormal);
-        float dotNL = clamp(lightFactor, 0.0, 1.0);
-        float intensity = pow(0.8 - dot(vNormal, vec3(0, 0, 1.0)), 12.0);
-        gl_FragColor = vec4(1, 1.0, 1.0, 1.0) * intensity * dotNL;
-      }`,
+    void main() {
+      // Calcul du Fresnel inversé (plus fort sur les bords)
+      float fresnel = 1.0 - abs(dot(normalize(vPosition), vNormal));
+
+      // Simulation de la lumière du soleil
+      float lightFactor = max(dot(normalize(sunDirection), vNormal), 0.0);
+
+      // Intensité du glow, ajustable
+      float intensity = pow(fresnel, 2.5) * lightFactor * 1.5;
+
+      // Couleur du glow
+      vec3 glowColor = vec3(0.3, 0.6, 1.0); // Bleu clair atmosphérique
+
+      gl_FragColor = vec4(glowColor * intensity, intensity);
+    }
+`,
 });
 
 const cloudGeometry = new THREE.SphereGeometry(15.1, 64, 64);
 const glow = new THREE.Mesh(cloudGeometry, glowMaterial);
 scene.add(glow);
-glow.position.y = 30; //REMOVE THIS LINE WHEN OK
+//glow.position.y = 30; //REMOVE THIS LINE WHEN OK
 /**************************************** GLOW ************************************************ */
 
 sphere.position.set(0, 0, 0);
