@@ -71,6 +71,8 @@ const earthMaterial = new THREE.ShaderMaterial({
 });
 
 const sphere = new THREE.Mesh(geometry, earthMaterial);
+sphere.rotateY(-90 * (Math.PI / 180));
+sphere.rotateZ(-35 * (Math.PI / 180));
 scene.add(sphere);
 
 /**************************************** GLOW ************************************************ */
@@ -86,7 +88,7 @@ const glowMaterial = new THREE.ShaderMaterial({
 
     void main() {
       vNormal = normalize(normalMatrix * normal);
-      vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+      vPosition = (modelMatrix * vec4(position, 1.0)).xyz;
     
       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     }
@@ -97,24 +99,26 @@ const glowMaterial = new THREE.ShaderMaterial({
     uniform vec3 sunDirection;
 
     void main() {
-      // Calcul du Fresnel inversé (plus fort sur les bords)
-      float fresnel = 1.0 - abs(dot(normalize(vPosition), vNormal));
+      // Calcul du Fresnel 
+      vec3 viewDir = normalize(cameraPosition - vPosition);
+      float fresnel = 1.0-abs(dot(viewDir, vNormal));
 
       // Simulation de la lumière du soleil
-      float lightFactor = max(dot(normalize(sunDirection), vNormal), 0.0);
+      float lightFactor = max(dot(normalize(sunDirection), abs(vNormal)), 0.0);
+      //on prend ABS de vNormal pour les 2 cotés de la planete
 
       // Intensité du glow, ajustable
       float intensity = pow(fresnel, 2.5) * lightFactor * 1.5;
 
       // Couleur du glow
-      vec3 glowColor = vec3(0.3, 0.6, 1.0); // Bleu clair atmosphérique
+      vec3 glowColor = vec3(0.3, 0.6, 1.0); 
 
       gl_FragColor = vec4(glowColor * intensity, intensity);
     }
 `,
 });
 
-const cloudGeometry = new THREE.SphereGeometry(15.1, 64, 64);
+const cloudGeometry = new THREE.SphereGeometry(15.2, 64, 64);
 const glow = new THREE.Mesh(cloudGeometry, glowMaterial);
 scene.add(glow);
 //glow.position.y = 30; //REMOVE THIS LINE WHEN OK
