@@ -5,7 +5,7 @@ const renderer = new THREE.WebGLRenderer(/*{ antialias: true }*/);
 const scene = new THREE.Scene();
 scene.add(new THREE.AmbientLight(0xffffff, 1));
 const axesHelper = new THREE.AxesHelper();
-scene.add(axesHelper);
+//scene.add(axesHelper);
 
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -45,9 +45,41 @@ for (let x = -10; x < size / 2; x++) {
 
 /************************************basic setup***********************************/
 
+/* -------------------------------- RAYCASTER METHOD -------------------------------------- */
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+window.addEventListener("pointermove", onPointerMove);
+function onPointerMove(event) {
+  // calculate pointer position in normalized device coordinates
+  // (-1 to +1) for both components
+
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(scene.children, true);
+
+  if (intersects.length > 0) {
+    let i = 2;
+    let clickedCube = intersects[intersects.length - 1].object;
+    while (clickedCube.type == "GridHelper") {
+      clickedCube = intersects[intersects.length - i].object;
+      i++;
+    }
+    console.log(clickedCube);
+    clickedCube.material.opacity = 1;
+    clickedCube.material.color.set(0xffffff);
+  }
+}
+
+/* -------------------------------- RAYCASTER METHOD -------------------------------------- */
+
 animate();
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
   renderer.render(scene, camera);
 }
+
+window.addEventListener("pointermove", onPointerMove);
