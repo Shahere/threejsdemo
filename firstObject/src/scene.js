@@ -153,6 +153,15 @@ function animate() {
   }
 }
 
-window.addEventListener("scroll", (e) => {
-  console.log(e);
-});
+window.addEventListener(
+  "wheel",
+  (e) => {
+    if (e.deltaY < 0) {
+      camera.fov = camera.fov + 3;
+    } else {
+      camera.fov = camera.fov - 3;
+    }
+    camera.updateProjectionMatrix();
+  },
+  false
+);
