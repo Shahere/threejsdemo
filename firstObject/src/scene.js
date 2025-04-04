@@ -62,14 +62,6 @@ scene.add(new THREE.AmbientLight(0xffffff, 1));
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-
-animate();
-
 function getRandomColor() {
   var letters = "0123456789ABCDEF";
   var color = "#";
@@ -86,4 +78,38 @@ function getRandomColor() {
 function getRandomPosition() {
   var ranNum = Math.random() * (Math.round(Math.random()) ? 1 : -1);
   return ranNum;
+}
+
+/* -------------------------------- RAYCASTER METHOD -------------------------------------- */
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+window.addEventListener("pointermove", onPointerMove);
+function onPointerMove(event) {
+  // calculate pointer position in normalized device coordinates
+  // (-1 to +1) for both components
+
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+/* -------------------------------- RAYCASTER METHOD -------------------------------------- */
+
+animate();
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  // update the picking ray with the camera and pointer position
+  raycaster.setFromCamera(pointer, camera);
+
+  // calculate objects intersecting the picking ray
+  const intersects = raycaster.intersectObjects(scene.children);
+  for (let i = 0; i < intersects.length; i++) {
+    if (intersects[i].object.material.color) {
+      intersects[i].object.material.color.set(0xff0000);
+    }
+  }
+
+  renderer.render(scene, camera);
 }
