@@ -49,8 +49,12 @@ for (let x = -10; x < size / 2; x++) {
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
+let previousHighlightedCube = null;
 window.addEventListener("pointermove", onPointerMove);
 function onPointerMove(event) {
+  if (previousHighlightedCube) {
+    previousHighlightedCube.material.opacity = 0;
+  }
   // calculate pointer position in normalized device coordinates
   // (-1 to +1) for both components
 
@@ -67,9 +71,9 @@ function onPointerMove(event) {
       clickedCube = intersects[intersects.length - i].object;
       i++;
     }
-    console.log(clickedCube);
     clickedCube.material.opacity = 1;
     clickedCube.material.color.set(0xffffff);
+    previousHighlightedCube = clickedCube;
   }
 }
 
