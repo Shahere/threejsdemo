@@ -80,6 +80,33 @@ function getRandomPosition() {
   return ranNum;
 }
 
+/**
+ * Brighter HEX colors
+ * @param {*} hex
+ * @param {*} lum
+ * @returns
+ */
+function colorLuminance(hex, lum) {
+  // validate hex string
+  hex = String(hex).replace(/[^0-9a-f]/gi, "");
+  if (hex.length < 6) {
+    hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+  }
+  lum = lum || 0;
+
+  // convert to decimal and change luminosity
+  var rgb = "#",
+    c,
+    i;
+  for (i = 0; i < 3; i++) {
+    c = parseInt(hex.substr(i * 2, 2), 16);
+    c = Math.round(Math.min(Math.max(0, c + c * lum), 255)).toString(16);
+    rgb += ("00" + c).substr(c.length);
+  }
+
+  return rgb;
+}
+
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
 
 const raycaster = new THREE.Raycaster();
@@ -95,8 +122,9 @@ function onPointerMove(event) {
 
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
 
-animate();
+let previousInterserts = [];
 
+animate();
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -107,9 +135,24 @@ function animate() {
   const intersects = raycaster.intersectObjects(scene.children);
   for (let i = 0; i < intersects.length; i++) {
     if (intersects[i].object.material.color) {
-      intersects[i].object.material.color.set(0xff0000);
+      intersects[i].object.material.color.baseColor =
+        intersects[i].object.material.color.getHex();
+      intersects[i].object.material.color.set(
+        colorLuminance(intersects[i].object.material.color.getHexString(), 0.8)
+      );
     }
   }
-
   renderer.render(scene, camera);
+  previousInterserts = intersects;
+  for (let i = 0; i < previousInterserts.length; i++) {
+    if (previousInterserts[i].object.material.color) {
+      previousInterserts[i].object.material.color.set(
+        previousInterserts[i].object.material.color.baseColor
+      );
+    }
+  }
 }
+
+window.addEventListener("scroll", (e) => {
+  console.log(e);
+});
