@@ -119,6 +119,8 @@ function checkNeighbour(cube) {
   return false; // aucun voisin visible
 }
 
+function addCube() {}
+
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
 
 animate();
@@ -129,3 +131,41 @@ function animate() {
 }
 
 window.addEventListener("pointermove", onPointerMove);
+
+/*---------------------------------- control logiq ----------------------------------------*/
+
+let isDown = false;
+let startX = 0;
+let startY = 0;
+let hasMoved = false;
+let startTime = 0;
+
+window.addEventListener("mousedown", (e) => {
+  isDown = true;
+  startX = e.clientX;
+  startY = e.clientY;
+  hasMoved = false;
+  startTime = Date.now();
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (isDown) {
+    const dx = Math.abs(e.clientX - startX);
+    const dy = Math.abs(e.clientY - startY);
+    if (dx > 5 || dy > 5) {
+      hasMoved = true;
+    }
+  }
+});
+
+window.addEventListener("mouseup", (e) => {
+  isDown = false;
+  const duration = Date.now() - startTime;
+
+  if (hasMoved) {
+  } else if (duration > 500) {
+    //Click long ou glissement
+  } else {
+    addCube(); // CLick simple
+  }
+});
