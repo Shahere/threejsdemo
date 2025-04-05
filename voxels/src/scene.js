@@ -26,6 +26,7 @@ const divisions = 20;
 const gridHelper = new THREE.GridHelper(size, divisions);
 gridHelper.position.set(0, 0, 0);
 scene.add(gridHelper);
+gridHelper.isVisible = true;
 
 for (let x = -10; x < size / 2; x++) {
   for (let y = 0; y < size; y++) {
@@ -39,6 +40,7 @@ for (let x = -10; x < size / 2; x++) {
       const cube = new THREE.Mesh(geometry, material);
       cube.position.set(x + 0.5, y + 0.5, z + 0.5);
       scene.add(cube);
+      cube.isVisible = false;
     }
   }
 }
@@ -65,15 +67,19 @@ function onPointerMove(event) {
   const intersects = raycaster.intersectObjects(scene.children, true);
 
   if (intersects.length > 0) {
-    let i = 2;
+    let i = 1;
     let clickedCube = intersects[intersects.length - 1].object;
-    while (clickedCube.type == "GridHelper") {
-      clickedCube = intersects[intersects.length - i].object;
-      i++;
-    }
-    clickedCube.material.opacity = 1;
-    clickedCube.material.color.set(0xffffff);
-    previousHighlightedCube = clickedCube;
+    /*if (clickedCube.isVisible == true) {
+      while (1) {
+        clickedCube = intersects[intersects.length - i].object;
+        i++;
+        if (clickedCube.isVisible == false) break;
+      }
+
+      clickedCube.material.opacity = 1;
+      clickedCube.material.color.set(0xffffff);
+      previousHighlightedCube = clickedCube;
+    }*/
   }
 }
 
