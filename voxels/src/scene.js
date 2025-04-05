@@ -28,6 +28,9 @@ gridHelper.position.set(0, 0, 0);
 scene.add(gridHelper);
 gridHelper.isVisible = true;
 
+const cubeGroup = new THREE.Group();
+scene.add(cubeGroup);
+
 for (let x = -10; x < size / 2; x++) {
   for (let y = 0; y < size; y++) {
     for (let z = -10; z < size / 2; z++) {
@@ -36,14 +39,19 @@ for (let x = -10; x < size / 2; x++) {
         color: 0xffffff,
         transparent: true,
         opacity: 0,
+        depthWrite: false,
       });
       const cube = new THREE.Mesh(geometry, material);
       cube.position.set(x + 0.5, y + 0.5, z + 0.5);
-      scene.add(cube);
-      cube.isVisible = false;
+      cubeGroup.add(cube);
+      cube.userData.tablex = x;
+      cube.userData.tabley = y;
+      cube.userData.tablez = z;
     }
   }
 }
+
+scene.add(cubeGroup);
 
 /************************************basic setup***********************************/
 
@@ -57,30 +65,58 @@ function onPointerMove(event) {
   if (previousHighlightedCube) {
     previousHighlightedCube.material.opacity = 0;
   }
-  // calculate pointer position in normalized device coordinates
-  // (-1 to +1) for both components
 
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(scene.children, true);
+  const intersects = raycaster.intersectObjects(cubeGroup.children, true);
 
   if (intersects.length > 0) {
-    let i = 1;
-    let clickedCube = intersects[intersects.length - 1].object;
-    /*if (clickedCube.isVisible == true) {
-      while (1) {
-        clickedCube = intersects[intersects.length - i].object;
-        i++;
-        if (clickedCube.isVisible == false) break;
-      }
-
+    const clickedCube = intersects[intersects.length - 1].object;
+    if (checkNeighbour(clickedCube)) {
       clickedCube.material.opacity = 1;
       clickedCube.material.color.set(0xffffff);
+      clickedCube.material.depthWrite = true;
       previousHighlightedCube = clickedCube;
-    }*/
+    }
   }
+}
+
+/**
+ * return true if the cube can be printed
+ * @param {*} cube
+ */
+function checkNeighbour(cube) {
+  const { tablex, tabley, tablez } = cube.userData;
+
+  if (tabley == 0) {
+    return true; //cube au sol
+  }
+
+  const directions = [
+    [1, 0, 0],
+    [-1, 0, 0],
+    [0, 1, 0],
+    [0, -1, 0],
+    [0, 0, 1],
+    [0, 0, -1],
+  ];
+
+  for (const [dx, dy, dz] of directions) {
+    const neighbor = cubeGroup.children.find((c) => {
+      const ux = c.userData.tablex;
+      const uy = c.userData.tabley;
+      const uz = c.userData.tablez;
+      return ux === tablex + dx && uy === tabley + dy && uz === tablez + dz;
+    });
+
+    if (neighbor && neighbor.material.opacity > 0) {
+      return true; // au moins un voisin visible
+    }
+  }
+
+  return false; // aucun voisin visible
 }
 
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
