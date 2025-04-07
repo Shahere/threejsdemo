@@ -73,46 +73,48 @@ function onPointerMove(event) {
   const intersects = raycaster.intersectObjects(cubeGroup.children, true);
 
   if (intersects.length > 0) {
-    let clickedCube = intersects[intersects.length - 1].object;
+    let clickedCube = intersects[0].object;
     let i = 1;
-    while (clickedCube.material.opacity == 1) {
-      console.log(i, clickedCube.material.opacity);
-      clickedCube = intersects[intersects.length - i].object;
+    while (!checkNeighbour(clickedCube)) {
+      if (i == intersects.length) return;
+      //console.log(i, clickedCube.material.opacity);
+      clickedCube = intersects[i].object;
       i++;
     }
 
-    if (checkNeighbour(clickedCube)) {
-      clickedCube.material.opacity = 0.4;
-      clickedCube.material.color.set(0xffffff);
-      clickedCube.material.depthWrite = true;
-      previousHighlightedCube = clickedCube;
-    }
+    clickedCube.material.opacity = 0.4;
+    clickedCube.material.color.set(0xffffff);
+    clickedCube.material.depthWrite = true;
+    previousHighlightedCube = clickedCube;
   }
 }
 
 function addCube(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  /*pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
   raycaster.setFromCamera(pointer, camera);
   const intersects = raycaster.intersectObjects(cubeGroup.children, true);
 
   if (intersects.length > 0) {
-    let clickedCube = intersects[intersects.length - 1].object;
+    let clickedCube = intersects[0].object;
     let i = 1;
-    while (clickedCube.material.opacity == 1) {
-      console.log(i, clickedCube.material.opacity);
-      clickedCube = intersects[intersects.length - i].object;
+    while (!checkNeighbour(clickedCube)) {
+      if (i == intersects.length) return;
+      //console.log(i, clickedCube.material.opacity);
+      clickedCube = intersects[i].object;
       i++;
     }
 
-    if (checkNeighbour(clickedCube)) {
-      clickedCube.material.opacity = 1;
-      clickedCube.material.color.set(0xffffff);
-      clickedCube.material.depthWrite = true;
-      previousHighlightedCube = null;
-    }
-  }
+    clickedCube.material.opacity = 1;
+    clickedCube.material.color.set(0xffffff);
+    clickedCube.material.depthWrite = true;
+    previousHighlightedCube = null;*/
+
+  previousHighlightedCube.material.opacity = 1;
+  previousHighlightedCube.material.color.set(0xffffff);
+  previousHighlightedCube.material.depthWrite = true;
+  previousHighlightedCube = null;
 }
 
 /**
@@ -121,10 +123,6 @@ function addCube(event) {
  */
 function checkNeighbour(cube) {
   const { tablex, tabley, tablez } = cube.userData;
-
-  if (tabley == 0) {
-    return true; //cube au sol
-  }
 
   const directions = [
     [1, 0, 0],
@@ -144,8 +142,13 @@ function checkNeighbour(cube) {
     });
 
     if (neighbor && neighbor.material.opacity > 0) {
+      console.log("ojrojfroj");
       return true; // au moins un voisin visible
     }
+  }
+
+  if (tabley == 0 && cube.material.opacity != 1) {
+    return true; //cube au sol
   }
 
   return false; // aucun voisin visible
