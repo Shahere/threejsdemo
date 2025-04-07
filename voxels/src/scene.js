@@ -75,11 +75,26 @@ function onPointerMove(event) {
   if (intersects.length > 0) {
     const clickedCube = intersects[intersects.length - 1].object;
     if (checkNeighbour(clickedCube)) {
-      clickedCube.material.opacity = 1;
+      clickedCube.material.opacity = 0.4;
       clickedCube.material.color.set(0xffffff);
       clickedCube.material.depthWrite = true;
       previousHighlightedCube = clickedCube;
     }
+  }
+}
+
+function addCube(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(cubeGroup.children, true);
+
+  if (intersects.length > 0) {
+    const clickedCube = intersects[intersects.length - 1].object;
+    clickedCube.material.opacity = 1;
+    clickedCube.material.color.set(0xffffff);
+    clickedCube.material.depthWrite = true;
   }
 }
 
@@ -118,8 +133,6 @@ function checkNeighbour(cube) {
 
   return false; // aucun voisin visible
 }
-
-function addCube() {}
 
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
 
@@ -166,6 +179,6 @@ window.addEventListener("mouseup", (e) => {
   } else if (duration > 500) {
     //Click long ou glissement
   } else {
-    addCube(); // CLick simple
+    addCube(e); // CLick simple
   }
 });
