@@ -73,7 +73,14 @@ function onPointerMove(event) {
   const intersects = raycaster.intersectObjects(cubeGroup.children, true);
 
   if (intersects.length > 0) {
-    const clickedCube = intersects[intersects.length - 1].object;
+    let clickedCube = intersects[intersects.length - 1].object;
+    let i = 1;
+    while (clickedCube.material.opacity == 1) {
+      console.log(i, clickedCube.material.opacity);
+      clickedCube = intersects[intersects.length - i].object;
+      i++;
+    }
+
     if (checkNeighbour(clickedCube)) {
       clickedCube.material.opacity = 0.4;
       clickedCube.material.color.set(0xffffff);
@@ -91,10 +98,20 @@ function addCube(event) {
   const intersects = raycaster.intersectObjects(cubeGroup.children, true);
 
   if (intersects.length > 0) {
-    const clickedCube = intersects[intersects.length - 1].object;
-    clickedCube.material.opacity = 1;
-    clickedCube.material.color.set(0xffffff);
-    clickedCube.material.depthWrite = true;
+    let clickedCube = intersects[intersects.length - 1].object;
+    let i = 1;
+    while (clickedCube.material.opacity == 1) {
+      console.log(i, clickedCube.material.opacity);
+      clickedCube = intersects[intersects.length - i].object;
+      i++;
+    }
+
+    if (checkNeighbour(clickedCube)) {
+      clickedCube.material.opacity = 1;
+      clickedCube.material.color.set(0xffffff);
+      clickedCube.material.depthWrite = true;
+      previousHighlightedCube = null;
+    }
   }
 }
 
