@@ -115,6 +115,7 @@ function addCube(event) {
   previousHighlightedCube.material.color.set(0xffffff);
   previousHighlightedCube.material.depthWrite = true;
   previousHighlightedCube = null;
+  onPointerMove(event);
 }
 
 /**
