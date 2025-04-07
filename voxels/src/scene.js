@@ -1,8 +1,9 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-const renderer = new THREE.WebGLRenderer(/*{ antialias: true }*/);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xaaaaaa);
 scene.add(new THREE.AmbientLight(0xffffff, 1));
 const axesHelper = new THREE.AxesHelper();
 //scene.add(axesHelper);
@@ -36,7 +37,7 @@ for (let x = -10; x < size / 2; x++) {
     for (let z = -10; z < size / 2; z++) {
       const geometry = new THREE.BoxGeometry(1, 1, 1);
       const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
+        color: 0xff0000,
         transparent: true,
         opacity: 0,
         depthWrite: false,
@@ -83,7 +84,6 @@ function onPointerMove(event) {
     }
 
     clickedCube.material.opacity = 0.4;
-    clickedCube.material.color.set(0xffffff);
     clickedCube.material.depthWrite = true;
     previousHighlightedCube = clickedCube;
   }
@@ -111,8 +111,16 @@ function addCube(event) {
     clickedCube.material.depthWrite = true;
     previousHighlightedCube = null;*/
 
+  let objectEdges = new THREE.LineSegments(
+    new THREE.EdgesGeometry(previousHighlightedCube.geometry),
+    new THREE.LineBasicMaterial({
+      color: "black",
+      //opacity: 0,
+      //transparent: true,
+    })
+  );
+  previousHighlightedCube.add(objectEdges);
   previousHighlightedCube.material.opacity = 1;
-  previousHighlightedCube.material.color.set(0xffffff);
   previousHighlightedCube.material.depthWrite = true;
   previousHighlightedCube = null;
   onPointerMove(event);
