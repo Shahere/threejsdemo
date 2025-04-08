@@ -1,6 +1,15 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+let colorPicker = document.getElementById("head");
+let blockColor = colorPicker.value;
+colorPicker.addEventListener("input", updateFirst, true);
+
+function updateFirst(event) {
+  event.preventDefault();
+  blockColor = event.target.value;
+}
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 //renderer.shadowMap.enabled = true;
 const scene = new THREE.Scene();
@@ -104,11 +113,13 @@ function onPointerMove(event) {
 
     clickedCube.material.opacity = 0.4;
     clickedCube.material.depthWrite = true;
+    clickedCube.material.color.set(blockColor);
     previousHighlightedCube = clickedCube;
   }
 }
 
 function addCube(event) {
+  if (previousHighlightedCube == null) return;
   let objectEdges = new THREE.LineSegments(
     new THREE.EdgesGeometry(previousHighlightedCube.geometry),
     new THREE.LineBasicMaterial({
@@ -120,7 +131,44 @@ function addCube(event) {
   previousHighlightedCube.add(objectEdges);
   previousHighlightedCube.material.opacity = 1;
   previousHighlightedCube.material.depthWrite = true;
+  previousHighlightedCube.material.color.set(blockColor);
   previousHighlightedCube = null;
+  onPointerMove(event);
+}
+
+function deleteCube(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const intersects = raycaster.intersectObjects(cubeGroup.children, true);
+
+  if (intersects.length > 0) {
+    let clickedCube = intersects[0].object;
+    let i = 1;
+    while (clickedCube.material.opacity != 1) {
+      if (i == intersects.length) return;
+      clickedCube = intersects[i].object;
+      i++;
+    }
+
+    clickedCube.material.opacity = 0.0;
+    clickedCube.material.depthWrite = false;
+    clickedCube.material.transparent = true;
+    clickedCube.material.needsUpdate = true;
+    clickedCube.material.blending = THREE.NormalBlending;
+
+    //On regarde aussi le parent
+    const parent = clickedCube.parent;
+
+    parent.traverse((child) => {
+      if (child.material && child.material.opacity === 1) {
+        child.material.transparent = true;
+        child.material.opacity = 0.0;
+        child.material.depthWrite = false;
+        child.material.needsUpdate = true;
+      }
+    });
+  }
   onPointerMove(event);
 }
 
@@ -179,7 +227,7 @@ let startY = 0;
 let hasMoved = false;
 let startTime = 0;
 
-window.addEventListener("mousedown", (e) => {
+renderer.domElement.addEventListener("mousedown", (e) => {
   isDown = true;
   startX = e.clientX;
   startY = e.clientY;
@@ -187,7 +235,7 @@ window.addEventListener("mousedown", (e) => {
   startTime = Date.now();
 });
 
-window.addEventListener("mousemove", (e) => {
+renderer.domElement.addEventListener("mousemove", (e) => {
   if (isDown) {
     const dx = Math.abs(e.clientX - startX);
     const dy = Math.abs(e.clientY - startY);
@@ -197,7 +245,7 @@ window.addEventListener("mousemove", (e) => {
   }
 });
 
-window.addEventListener("mouseup", (e) => {
+renderer.domElement.addEventListener("mouseup", (e) => {
   isDown = false;
   const duration = Date.now() - startTime;
 
@@ -205,6 +253,10 @@ window.addEventListener("mouseup", (e) => {
   } else if (duration > 500) {
     //Click long ou glissement
   } else {
-    addCube(e); // CLick simple
+    if (e.button == 0) {
+      addCube(e);
+    } else if (e.button == 2) {
+      deleteCube(e);
+    }
   }
 });
