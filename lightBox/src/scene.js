@@ -6,28 +6,28 @@ renderer.shadowMap.enabled = true;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xaaaaaa);
 /* SET THE LIGHT */
-scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+//scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 
-// set up spot light + helper
-const sl = new THREE.SpotLight(0x00ff00, 100000, 20, Math.PI / 8, 0);
+// VERT
+const sl = new THREE.SpotLight(0x00ff00, 1000000, 30, Math.PI / 8, 0);
 sl.position.set(0, 10, 6);
 sl.target.position.set(0, 4, 0);
 const slHelper = new THREE.SpotLightHelper(sl);
 sl.castShadow = true;
 scene.add(sl, slHelper);
 
-// set up spot light + helper
-const sl2 = new THREE.SpotLight(0x0000ff, 100000, 20, Math.PI / 8, 0);
+// BLEU
+const sl2 = new THREE.SpotLight(0x0000ff, 1000000, 30, Math.PI / 8, 0);
 sl2.position.set(-4, 10, 6);
-sl2.target.position.set(0, 4, 0);
+sl2.target.position.set(0, 4, 2);
 const slHelper2 = new THREE.SpotLightHelper(sl2);
 sl2.castShadow = true;
 scene.add(sl2, slHelper2);
 
-// set up spot light + helper
-const sl3 = new THREE.SpotLight(0xff0000, 100000, 20, Math.PI / 8, 0);
+// ROUGE
+const sl3 = new THREE.SpotLight(0xff0000, 1000000, 30, Math.PI / 8, 0);
 sl3.position.set(4, 10, 6);
-sl3.target.position.set(0, 4, 0);
+sl3.target.position.set(0, 4, 2);
 const slHelper3 = new THREE.SpotLightHelper(sl3);
 sl3.castShadow = true;
 scene.add(sl3, slHelper3);
@@ -60,7 +60,7 @@ const bg1 = new THREE.BoxGeometry(1, 1, 1);
 const bm1 = new THREE.MeshPhongMaterial({ color: 0xff0000 });
 const boxMesh1 = new THREE.Mesh(bg1, bm1);
 boxMesh1.castShadow = true;
-boxMesh1.position.x = -2;
+boxMesh1.position.x = -5;
 boxMesh1.position.y = 2;
 scene.add(boxMesh1);
 
@@ -78,9 +78,39 @@ const bg3 = new THREE.BoxGeometry(1, 1, 1);
 const bm3 = new THREE.MeshPhongMaterial({ color: 0x0000ff });
 const boxMesh3 = new THREE.Mesh(bg3, bm3);
 boxMesh3.castShadow = true;
-boxMesh3.position.x = 2;
+boxMesh3.position.x = 5;
 boxMesh3.position.y = 2;
 scene.add(boxMesh3);
+
+// set up blue box mesh
+const bg4 = new THREE.BoxGeometry(1, 1, 1);
+const bm4 = new THREE.MeshPhongMaterial({ color: 0xffffff });
+const boxMesh4 = new THREE.Mesh(bg4, bm4);
+boxMesh4.castShadow = true;
+boxMesh4.position.x = 3;
+boxMesh4.position.y = 2;
+boxMesh4.position.z = -3;
+scene.add(boxMesh4);
+
+// set up blue box mesh
+const bg5 = new THREE.BoxGeometry(1, 1, 1);
+const bm5 = new THREE.MeshPhongMaterial({ color: 0xffffff });
+const boxMesh5 = new THREE.Mesh(bg5, bm5);
+boxMesh5.castShadow = true;
+boxMesh5.position.x = -3;
+boxMesh5.position.y = 2;
+boxMesh5.position.z = -3;
+scene.add(boxMesh5);
+
+// set up blue box mesh
+const bg6 = new THREE.BoxGeometry(1, 1, 1);
+const bm6 = new THREE.MeshPhongMaterial({ color: 0xffffff });
+const boxMesh6 = new THREE.Mesh(bg6, bm6);
+boxMesh6.castShadow = true;
+boxMesh6.position.x = 0;
+boxMesh6.position.y = 1;
+boxMesh6.position.z = 3;
+scene.add(boxMesh6);
 
 /************************************basic setup***********************************/
 const divisions = 20;
