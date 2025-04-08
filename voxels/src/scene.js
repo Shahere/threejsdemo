@@ -2,9 +2,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+//renderer.shadowMap.enabled = true;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xaaaaaa);
+/* SET THE LIGHT */
 scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+/* END SET THE LIGHT */
 const axesHelper = new THREE.AxesHelper();
 //scene.add(axesHelper);
 
@@ -36,7 +40,7 @@ for (let x = -10; x < size / 2; x++) {
   for (let y = 0; y < size; y++) {
     for (let z = -10; z < size / 2; z++) {
       const geometry = new THREE.BoxGeometry(1, 1, 1);
-      const material = new THREE.MeshBasicMaterial({
+      const material = new THREE.MeshStandardMaterial({
         color: 0xff0000,
         transparent: true,
         opacity: 0,
@@ -54,6 +58,21 @@ for (let x = -10; x < size / 2; x++) {
 
 scene.add(cubeGroup);
 
+/* Floor */
+const floor = new THREE.Group();
+for (let x = -10; x < size / 2; x++) {
+  for (let z = -10; z < size / 2; z++) {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xcccccc,
+    });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(x + 0.5, -0.5, z + 0.5);
+    cube.receiveShadow = true;
+    floor.add(cube);
+  }
+}
+scene.add(floor);
 /************************************basic setup***********************************/
 
 /* -------------------------------- RAYCASTER METHOD -------------------------------------- */
@@ -90,27 +109,6 @@ function onPointerMove(event) {
 }
 
 function addCube(event) {
-  /*pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  raycaster.setFromCamera(pointer, camera);
-  const intersects = raycaster.intersectObjects(cubeGroup.children, true);
-
-  if (intersects.length > 0) {
-    let clickedCube = intersects[0].object;
-    let i = 1;
-    while (!checkNeighbour(clickedCube)) {
-      if (i == intersects.length) return;
-      //console.log(i, clickedCube.material.opacity);
-      clickedCube = intersects[i].object;
-      i++;
-    }
-
-    clickedCube.material.opacity = 1;
-    clickedCube.material.color.set(0xffffff);
-    clickedCube.material.depthWrite = true;
-    previousHighlightedCube = null;*/
-
   let objectEdges = new THREE.LineSegments(
     new THREE.EdgesGeometry(previousHighlightedCube.geometry),
     new THREE.LineBasicMaterial({
@@ -151,7 +149,6 @@ function checkNeighbour(cube) {
     });
 
     if (neighbor && neighbor.material.opacity > 0) {
-      console.log("ojrojfroj");
       return true; // au moins un voisin visible
     }
   }
