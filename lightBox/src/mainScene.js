@@ -2,20 +2,23 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import scene2 from "./scene2";
 import scene1 from "./scene1";
+import { WebGLRenderTarget, DepthTexture, UnsignedShortType } from "three";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
-THREE.ColorManagement.enabled = true;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ReinhardToneMapping;
+
+const lightRenderTarget = new WebGLRenderTarget(1024, 1024);
+lightRenderTarget.depthTexture = new DepthTexture();
+lightRenderTarget.depthTexture.type = UnsignedShortType;
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xaaaaaa);
 
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  1,
+  100
 );
 camera.position.set(5, 5, 10);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -33,11 +36,18 @@ scene.add(slHelper13);
 groupSCENE.position.set(0, 0, 0);
 scene.add(groupSCENE);
 
-let [groupSCENE2, lightWhite] = scene2();
+const lightCamera = new THREE.PerspectiveCamera(47.5, 1024 / 1024, 5, 17);
+lightCamera.position.set(30, 0, 15);
+lightCamera.lookAt(new THREE.Vector3(30, 0, 0));
+
+let [groupSCENE2, lightWhite] = scene2(lightCamera, lightRenderTarget);
 let slHelperWhite = new THREE.SpotLightHelper(lightWhite);
 scene.add(slHelperWhite);
 groupSCENE2.position.set(30, 0, 0);
 scene.add(groupSCENE2);
+
+let camHelper = new THREE.CameraHelper(lightCamera);
+scene.add(camHelper);
 
 let targetPosition = null;
 let targetLookAt = null;
@@ -47,6 +57,10 @@ let currentLookAt = new THREE.Vector3(0, 0, 0);
 animate();
 function animate() {
   requestAnimationFrame(animate);
+  renderer.setRenderTarget(lightRenderTarget);
+  renderer.render(scene, lightCamera);
+  renderer.setRenderTarget(null);
+
   controls.update();
 
   if (isAnimating && targetPosition && targetLookAt) {
@@ -70,7 +84,6 @@ function animate() {
     controls.target.copy(targetLookAt);
     controls.enabled = true;
   }
-
   renderer.render(scene, camera);
 }
 

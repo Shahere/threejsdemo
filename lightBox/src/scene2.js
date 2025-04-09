@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default function scene2() {
+export default function scene2(lightCamera, renderTarget) {
   let groupSCENE2 = new THREE.Group();
 
   // Lumière blanche
@@ -13,7 +13,43 @@ export default function scene2() {
 
   // Écran blanc
   const screenGeo = new THREE.PlaneGeometry(15, 15);
-  const screenMat = new THREE.MeshPhongMaterial({ color: 0xffffff });
+  const screenMat = new THREE.ShaderMaterial({
+    uniforms: {
+      color: { value: new THREE.Color(0xffffff) },
+      lightPosition: { value: light.position },
+      lightDepthTexture: { value: renderTarget.depthTexture },
+      depthTexture: { value: renderTarget.depthTexture },
+      cameraNear: { value: lightCamera.near },
+      cameraFar: { value: lightCamera.far },
+    },
+    side: THREE.DoubleSide,
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+    uniform sampler2D lightDepthTexture;
+    uniform float cameraNear;
+    uniform float cameraFar;
+    varying vec2 vUv;
+
+    float readLightDepth(sampler2D depthTex, vec2 coord) {
+      float fragCoordZ = texture2D(depthTex, coord).r;
+      float z = fragCoordZ * (cameraFar - cameraNear) + cameraNear;
+      return z;
+    }
+
+    void main() {
+      float lightDepth = readLightDepth(lightDepthTexture, vUv);
+
+      // Visualisation de la profondeur relative à la lumière
+      gl_FragColor = vec4(vec3(lightDepth / cameraFar), 1.0);
+    }
+  `,
+  });
   const screen = new THREE.Mesh(screenGeo, screenMat);
   screen.receiveShadow = true;
   screen.position.set(0, 0, -2);
