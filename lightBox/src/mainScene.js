@@ -5,6 +5,9 @@ import scene1 from "./scene1";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
+THREE.ColorManagement.enabled = true;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ReinhardToneMapping;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xaaaaaa);
 
@@ -30,14 +33,10 @@ scene.add(slHelper13);
 groupSCENE.position.set(0, 0, 0);
 scene.add(groupSCENE);
 
-let [groupSCENE2, sl, sl2, sl3] = scene2();
-let slHelper = new THREE.SpotLightHelper(sl);
-let slHelper2 = new THREE.SpotLightHelper(sl2);
-let slHelper3 = new THREE.SpotLightHelper(sl3);
-scene.add(slHelper);
-scene.add(slHelper2);
-scene.add(slHelper3);
-groupSCENE2.position.set(25, 0, 0);
+let [groupSCENE2, lightWhite] = scene2();
+let slHelperWhite = new THREE.SpotLightHelper(lightWhite);
+scene.add(slHelperWhite);
+groupSCENE2.position.set(30, 0, 0);
 scene.add(groupSCENE2);
 
 let targetPosition = null;
