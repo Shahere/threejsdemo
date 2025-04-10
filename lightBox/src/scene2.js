@@ -21,11 +21,17 @@ export default function scene2(lightCamera, renderTarget) {
       depthTexture: { value: renderTarget.depthTexture },
       cameraNear: { value: lightCamera.near },
       cameraFar: { value: lightCamera.far },
+      lightColorTexture: { value: renderTarget.texture },
+      lightViewMatrix: { value: lightCamera.matrixWorldInverse },
+      lightProjectionMatrix: { value: lightCamera.projectionMatrix },
     },
     side: THREE.DoubleSide,
     vertexShader: `
       varying vec2 vUv;
+      varying vec3 vWorldPosition;
       void main() {
+        vec4 worldPos = modelMatrix * vec4(position, 1.0);
+        vWorldPosition = worldPos.xyz;
         vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
@@ -36,17 +42,29 @@ export default function scene2(lightCamera, renderTarget) {
     uniform float cameraFar;
     varying vec2 vUv;
 
-    float readLightDepth(sampler2D depthTex, vec2 coord) {
-      float fragCoordZ = texture2D(depthTex, coord).r;
-      float z = fragCoordZ * (cameraFar - cameraNear) + cameraNear;
-      return z;
+    uniform sampler2D lightColorTexture;
+    uniform mat4 lightViewMatrix;
+    uniform mat4 lightProjectionMatrix;
+    varying vec3 vWorldPosition;
+    
+
+    vec2 projectToLight(vec3 worldPos) {
+      vec4 lightSpace = lightProjectionMatrix * lightViewMatrix * vec4(worldPos, 1.0);
+      vec3 ndc = lightSpace.xyz / lightSpace.w;
+      return ndc.xy * 0.5 + 0.5;
     }
 
     void main() {
-      float lightDepth = readLightDepth(lightDepthTexture, vUv);
+      vec2 uv = projectToLight(vWorldPosition);
 
-      // Visualisation de la profondeur relative à la lumière
-      gl_FragColor = vec4(vec3(lightDepth / cameraFar), 1.0);
+      if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+        discard;
+      }
+
+      vec3 lightColor = texture2D(lightColorTexture, uv).rgb;
+      vec3 finalColor = vec3(1.0) - lightColor;
+
+      gl_FragColor = vec4(finalColor, 1.0);
     }
   `,
   });
