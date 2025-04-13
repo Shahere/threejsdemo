@@ -41,13 +41,13 @@ lightCamera.position.set(30, 0, 15);
 lightCamera.lookAt(new THREE.Vector3(30, 0, 0));
 
 let [groupSCENE2, lightWhite] = scene2(lightCamera, lightRenderTarget);
-//let slHelperWhite = new THREE.SpotLightHelper(lightWhite);
-//scene.add(slHelperWhite);
+let slHelperWhite = new THREE.SpotLightHelper(lightWhite);
+scene.add(slHelperWhite);
 groupSCENE2.position.set(30, 0, 0);
 scene.add(groupSCENE2);
 
-//let camHelper = new THREE.CameraHelper(lightCamera);
-//scene.add(camHelper);
+let camHelper = new THREE.CameraHelper(lightCamera);
+scene.add(camHelper);
 
 let targetPosition = null;
 let targetLookAt = null;

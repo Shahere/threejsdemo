@@ -15,33 +15,20 @@ export default function scene2(lightCamera, renderTarget) {
   const screenGeo = new THREE.PlaneGeometry(15, 15);
   const screenMat = new THREE.ShaderMaterial({
     uniforms: {
-      color: { value: new THREE.Color(0xffffff) },
-      lightPosition: { value: light.position },
-      lightDepthTexture: { value: renderTarget.depthTexture },
-      depthTexture: { value: renderTarget.depthTexture },
-      cameraNear: { value: lightCamera.near },
-      cameraFar: { value: lightCamera.far },
       lightColorTexture: { value: renderTarget.texture },
       lightViewMatrix: { value: lightCamera.matrixWorldInverse },
       lightProjectionMatrix: { value: lightCamera.projectionMatrix },
     },
     side: THREE.DoubleSide,
     vertexShader: `
-      varying vec2 vUv;
       varying vec3 vWorldPosition;
       void main() {
         vec4 worldPos = modelMatrix * vec4(position, 1.0);
         vWorldPosition = worldPos.xyz;
-        vUv = uv;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
     fragmentShader: `
-    uniform sampler2D lightDepthTexture;
-    uniform float cameraNear;
-    uniform float cameraFar;
-    varying vec2 vUv;
-
     uniform sampler2D lightColorTexture;
     uniform mat4 lightViewMatrix;
     uniform mat4 lightProjectionMatrix;
@@ -62,7 +49,7 @@ export default function scene2(lightCamera, renderTarget) {
       }
 
       vec3 lightColor = texture2D(lightColorTexture, uv).rgb;
-      vec3 finalColor = vec3(1.0) - lightColor;
+      vec3 finalColor = vec3(1) - lightColor;
 
       gl_FragColor = vec4(finalColor, 1.0);
     }
@@ -79,7 +66,7 @@ export default function scene2(lightCamera, renderTarget) {
       color: color,
       transparent: true,
       opacity: 0.8,
-      blending: THREE.SubtractiveBlending,
+      //blending: THREE.SubtractiveBlending,
       side: THREE.DoubleSide,
     });
 
