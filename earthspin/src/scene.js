@@ -4,11 +4,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const scene = new THREE.Scene();
 const textureLoader = new THREE.TextureLoader();
-let dayTexture = textureLoader.load("/img/earth_texture.png");
+let dayTexture = textureLoader.load("./img/earth_texture.png");
 dayTexture.colorSpace = THREE.SRGBColorSpace;
-let nightTexture = textureLoader.load("/img/earth_texture_night.png");
+let nightTexture = textureLoader.load("./img/earth_texture_night.png");
 nightTexture.colorSpace = THREE.SRGBColorSpace;
-let cloudTexture = textureLoader.load("/img/clouds.png");
+let cloudTexture = textureLoader.load("./img/clouds.png");
 const camera = new THREE.PerspectiveCamera(
   75,
   window.innerWidth / window.innerHeight,
