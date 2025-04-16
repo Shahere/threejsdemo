@@ -126,7 +126,7 @@ class MainScene extends Scene3D {
 
   async loadGun() {
     this.loader.load(
-      "/model/M4A1.glb",
+      "./public/model/M4A1.glb",
       (gltf) => {
         this.model = gltf.scene;
         this.model.scale.set(0.05, 0.05, 0.05);
@@ -217,6 +217,6 @@ class MainScene extends Scene3D {
 
 let project;
 
-PhysicsLoader("lib/ammo/kripken", () => {
+PhysicsLoader("./public/lib/ammo/kripken", () => {
   project = new Project({ scenes: [MainScene], antialias: true });
 });
