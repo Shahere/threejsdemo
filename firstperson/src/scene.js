@@ -109,6 +109,6 @@ class MainScene extends Scene3D {
 
 let project;
 
-PhysicsLoader("lib/ammo/kripken", () => {
+PhysicsLoader("./public/lib/ammo/kripken", () => {
   project = new Project({ scenes: [MainScene], antialias: true });
 });
