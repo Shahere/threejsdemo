@@ -19,12 +19,12 @@ document.body.appendChild(renderer.domElement);
 
 let loader = new THREE.TextureLoader();
 
-const south = loader.load("/img/clouds1_south.png");
-const north = loader.load("/img/clouds1_north.png");
-const up = loader.load("/img/clouds1_up.png");
-const down = loader.load("/img/clouds1_down.png");
-const east = loader.load("/img/clouds1_east.png");
-const west = loader.load("/img/clouds1_west.png");
+const south = loader.load("./img/clouds1_south.png");
+const north = loader.load("./img/clouds1_north.png");
+const up = loader.load("./img/clouds1_up.png");
+const down = loader.load("./img/clouds1_down.png");
+const east = loader.load("./img/clouds1_east.png");
+const west = loader.load("./img/clouds1_west.png");
 // side: THREE.BackSide,
 const materials = [
   new THREE.MeshBasicMaterial({ map: east, side: THREE.BackSide }), // Right
