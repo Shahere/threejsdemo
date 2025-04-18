@@ -12,14 +12,25 @@ header {
     display: flex;
     justify-content:flex-start
 }
+h1 {
+    font-size: 3rem;
+    margin-left: 2%;
+    margin-top: 1%;
+}
+ul {
+    list-style-type: none;
+}
 .list {
     width: 100%;
     padding-left: 2%;
     padding-right: 2%;
+    font-size:x-large;
+    display: flex;
+    align-items: center;
 }
 .listContainer {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background-color: #ccc;
+    align-items: center;
 }
