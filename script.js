@@ -7,3 +7,11 @@ allLI.forEach((li) => {
     iframe.src = `./${className}/`;
   });
 });
+
+const hamMenu = document.getElementsByClassName("ham-menu")[0];
+const offScreenMenu = document.getElementsByClassName("list")[0];
+
+hamMenu.addEventListener("click", () => {
+  hamMenu.classList.toggle("active");
+  offScreenMenu.classList.toggle("active");
+});
