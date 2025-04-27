@@ -45,7 +45,7 @@ ul {
 @media only screen and (max-width: 750px) {
     
     h1 {
-        display: none;
+        color: #6F86FF;
     }
     .list {
         background-color: rgb(34, 37, 49);
