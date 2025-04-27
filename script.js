@@ -5,6 +5,8 @@ allLI.forEach((li) => {
   li.addEventListener("click", (e) => {
     let className = e.target.className;
     iframe.src = `./${className}/`;
+    hamMenu.classList.toggle("active");
+    offScreenMenu.classList.toggle("active");
   });
 });
 
