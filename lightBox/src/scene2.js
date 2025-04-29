@@ -37,8 +37,16 @@ export default function scene2(lightCamera, renderTarget) {
 
     vec2 projectToLight(vec3 worldPos) {
       vec4 lightSpace = lightProjectionMatrix * lightViewMatrix * vec4(worldPos, 1.0);
+      // LightviewMatrix = Comment la lumière voit la scène
+      // LightprojectionMatrix = Comment la lumière projette la scène en 2d
+
       vec3 ndc = lightSpace.xyz / lightSpace.w;
-      return ndc.xy * 0.5 + 0.5;
+      return ndc.xy * 0.5 + 0.5; // pour mettre au format [-1,1] => [0,1] et au milieu
+    }
+
+    vec3 applyColorFilter(vec3 color, vec3 filterColor) {
+      vec3 interMediateColor = vec3(1) - filterColor;       // Inverse of the filter color, 0xffffff - 0x00ffff = 0xff0000
+      return color - interMediateColor;                     // Get final color,             0xffffff - 0xff0000 = 0x00ffff
     }
 
     void main() {
@@ -47,9 +55,10 @@ export default function scene2(lightCamera, renderTarget) {
       if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
         discard;
       }
+      // Si les coordonnées UV sont hors du carré [0,1] (donc en dehors de la "vue" de la lumière), on discard ce fragment (= on ne l'affiche pas).
 
       vec3 lightColor = texture2D(lightColorTexture, uv).rgb;
-      vec3 finalColor = vec3(1) - lightColor;
+      vec3 finalColor = applyColorFilter(vec3(1), lightColor); 
 
       gl_FragColor = vec4(finalColor, 1.0);
     }
@@ -81,9 +90,9 @@ export default function scene2(lightCamera, renderTarget) {
   }
 
   // Création des 3 filtres CMJ
-  const cyan = createFilter(0x00ffff, new THREE.Vector3(-3, 0, 1));
-  const magenta = createFilter(0xff00ff, new THREE.Vector3(0, 0, 1));
-  const yellow = createFilter(0xffff00, new THREE.Vector3(3, 0, 1));
+  const cyan = createFilter(0x00ffff, new THREE.Vector3(-0.7, 1, 1));
+  const magenta = createFilter(0xff00ff, new THREE.Vector3(0, 0, 1.2));
+  const yellow = createFilter(0xffff00, new THREE.Vector3(0.7, 2, 1.4));
 
   return [groupSCENE2, light];
 }
