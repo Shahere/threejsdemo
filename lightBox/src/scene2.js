@@ -90,9 +90,9 @@ export default function scene2(lightCamera, renderTarget) {
   }
 
   // Création des 3 filtres CMJ
-  const cyan = createFilter(0x00ffff, new THREE.Vector3(-0.7, 1, 1));
-  const magenta = createFilter(0xff00ff, new THREE.Vector3(0, 0, 1.2));
-  const yellow = createFilter(0xffff00, new THREE.Vector3(0.7, 2, 1.4));
+  const cyan = createFilter(0x00ffff, new THREE.Vector3(-0.7, 1, 3));
+  const magenta = createFilter(0xff00ff, new THREE.Vector3(0, 0, 3.2));
+  const yellow = createFilter(0xffff00, new THREE.Vector3(0.7, 2, 3.4));
 
   return [groupSCENE2, light];
 }
