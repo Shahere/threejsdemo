@@ -43,6 +43,7 @@ ul {
         justify-content: space-between;
         width: 100%;
         align-items: center;
+        user-select: none;
     }
 
     .cursor_pointer {
