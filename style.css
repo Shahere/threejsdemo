@@ -46,7 +46,7 @@ ul {
         user-select: none;
     }
 
-    .cursor_pointer {
+    #cursor_pointer {
         cursor: pointer;
     }
 }
