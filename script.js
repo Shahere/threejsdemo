@@ -72,8 +72,8 @@ loader.load("./fonts/Overcome.json", function (font) {
   });
 
   const textMesh = new THREE.Mesh(geometry, [
-    new THREE.MeshBasicMaterial({ color: 0x888888 }),
-    new THREE.MeshBasicMaterial({ color: 0x444444 }),
+    new THREE.MeshBasicMaterial({ color: 0x222222 }),
+    new THREE.MeshBasicMaterial({ color: 0x111111 }),
   ]);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
