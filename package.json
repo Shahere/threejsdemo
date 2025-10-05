@@ -4,12 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "vite --host" 
+    "start": "vite --host"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "three": "^0.180.0",
     "vite": "^6.2.6"
   }
 }
