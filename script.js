@@ -49,64 +49,46 @@ const material = new THREE.MeshStandardMaterial({
   envMapIntensity: 1,
 });
 
-for (let i = 0; i < 10; i++) {
-  for (let j = 0; j < 10; j++) {
-    let plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = Math.PI / 2;
-    scene.add(plane);
-    plane.position.x = i * 10;
-    plane.position.z = j * 10;
-
-    plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = Math.PI / 2;
-    scene.add(plane);
-    plane.position.x = i * 10 * -1;
-    plane.position.z = j * 10 * -1;
-
-    plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = Math.PI / 2;
-    scene.add(plane);
-    plane.position.x = i * 10 * -1;
-    plane.position.z = j * 10;
-
-    plane = new THREE.Mesh(geometry, material);
-    plane.rotation.x = Math.PI / 2;
-    scene.add(plane);
-    plane.position.x = i * 10;
-    plane.position.z = j * 10 * -1;
-  }
-}
+var pmaterial = new THREE.MeshPhongMaterial({
+  color: 0x000000,
+  side: THREE.DoubleSide,
+  roughness: 10,
+  metalness: 0.6,
+  opacity: 0.5,
+  transparent: true,
+});
+var pgeometry = new THREE.PlaneGeometry(580, 580);
+var pelement = new THREE.Mesh(pgeometry, pmaterial);
+pelement.rotation.x = Math.PI / 2;
+scene.add(pelement);
 
 const loader = new FontLoader();
-
-loader.load("./fonts/Farenheight.json", function (font) {
+loader.load("./fonts/Overcome.json", function (font) {
   const geometry = new TextGeometry("Savinien \nBarbotaud", {
     font: font,
     size: 8,
-    depth: 5,
+    depth: 10,
     curveSegments: 12,
   });
 
   const textMesh = new THREE.Mesh(geometry, [
-    new THREE.MeshBasicMaterial({ color: 0xffffff }),
-    new THREE.MeshBasicMaterial({ color: 0x999999 }),
+    new THREE.MeshBasicMaterial({ color: 0x888888 }),
+    new THREE.MeshBasicMaterial({ color: 0x444444 }),
   ]);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
   textMesh.position.z = 25;
+  textMesh.position.y = -5;
   textMesh.position.x = -10;
   scene.add(textMesh);
 });
 
 let targetRotationY = 0;
 let targetRotationZ = 0;
-
 let velocityY = 0;
 let velocityZ = 0;
-
 const stiffness = 0.03; // force du ressort
 const damping = 0.8; // amortissement (0-1), plus petit = plus de rebond
-
 document.addEventListener("mousemove", (event) => {
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
@@ -121,7 +103,7 @@ document.addEventListener("mousemove", (event) => {
 function animate() {
   requestAnimationFrame(animate);
 
-  // Calcul type "ressort"
+  // c'est l'effet Overshoot
   const forceY = (targetRotationY - scene.rotation.y) * stiffness;
   velocityY = velocityY * damping + forceY;
   scene.rotation.y += velocityY;
