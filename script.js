@@ -17,7 +17,8 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(12, 25, 5);
 //camera.position.set(30, 30, 30);
-camera.position.set(50, 50, -50);
+//camera.position.set(50, 50, -50);
+//camera.position.set(0.1, 50, 0);
 camera.lookAt(0, 0, 0);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -40,8 +41,8 @@ scene.add(axesHelper);
 const geoFloor = new THREE.BoxGeometry(2000, 0.1, 2000);
 const matStdFloor = new THREE.MeshStandardMaterial({
   color: 0xbcbcbc,
-  roughness: 0.1,
-  metalness: 0,
+  roughness: 1,
+  metalness: 1,
 });
 const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor);
 scene.add(mshStdFloor);
@@ -75,6 +76,16 @@ loader.load("./fonts/Overcome.json", function (font) {
   textMesh.rotation.z = Math.PI / 2;
   textMesh.position.set(-10, 2, 25);
   scene.add(textMesh);
+
+  const rectLightUpper = new THREE.RectAreaLight(0x0000ff, 2, 10, 40);
+  rectLightUpper.position.set(3.5, 1, 6);
+  rectLightUpper.rotation.x = -Math.PI / 2;
+  scene.add(rectLightUpper);
+
+  const rectLightDown = new THREE.RectAreaLight(0x0000ff, 2, 10, 35);
+  rectLightDown.position.set(-14, 1, 9);
+  rectLightDown.rotation.x = -Math.PI / 2;
+  scene.add(rectLightDown);
 });
 
 const rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
