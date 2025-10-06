@@ -36,19 +36,6 @@ RectAreaLightUniformsLib.init();
 //DEBUG
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
-/*
-var pmaterial = new THREE.MeshPhongMaterial({
-  color: 0x000000,
-  side: THREE.DoubleSide,
-  roughness: 10,
-  metalness: 0.6,
-  opacity: 0.5,
-  transparent: true,
-});
-var pgeometry = new THREE.PlaneGeometry(580, 580);
-var pelement = new THREE.Mesh(pgeometry, pmaterial);
-pelement.rotation.x = Math.PI / 2;
-scene.add(pelement);*/
 
 const geoFloor = new THREE.BoxGeometry(2000, 0.1, 2000);
 const matStdFloor = new THREE.MeshStandardMaterial({
@@ -64,7 +51,7 @@ loader.load("./fonts/Overcome.json", function (font) {
   const geometry = new TextGeometry("Hello \nWorld", {
     font: font,
     size: 8,
-    depth: 10,
+    depth: 2,
     curveSegments: 12,
   });
   const materials = [
@@ -86,7 +73,7 @@ loader.load("./fonts/Overcome.json", function (font) {
   const textMesh = new THREE.Mesh(geometry, materials);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
-  textMesh.position.set(-10, -5, 25);
+  textMesh.position.set(-10, 2, 25);
   scene.add(textMesh);
 });
 
