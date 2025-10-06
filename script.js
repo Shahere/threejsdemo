@@ -2,8 +2,11 @@ import * as THREE from "three";
 
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
+import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.shadowMap.enabled = true;
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -14,41 +17,26 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(12, 25, 5);
 //camera.position.set(30, 30, 30);
-//camera.position.set(50, 30, 50);
+camera.position.set(50, 50, -50);
 camera.lookAt(0, 0, 0);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+console.log(THREE.REVISION);
+
+RectAreaLightUniformsLib.init();
+
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
-scene.add(new THREE.AmbientLight(0xffffff, 10));
-
-/*const sl = new THREE.SpotLight(0xffffff, 1000000, 100000, Math.PI, 0);
-sl.position.set(30, 30, 30);
-sl.target.position.set(0, 0, 0);
-const slHelper = new THREE.SpotLightHelper(sl);
-sl.castShadow = true;
-scene.add(sl);
-scene.add(slHelper);
-scene.add(sl.target);*/
+//scene.add(new THREE.AmbientLight(0xffffff, 10));
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
 //DEBUG
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
-
-const geometry = new THREE.PlaneGeometry(10, 10, 1, 1);
-const material = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
-  side: THREE.DoubleSide,
-  roughness: 0.1,
-  metalness: 0,
-  envMap: 1,
-  envMapIntensity: 1,
-});
-
+/*
 var pmaterial = new THREE.MeshPhongMaterial({
   color: 0x000000,
   side: THREE.DoubleSide,
@@ -60,28 +48,63 @@ var pmaterial = new THREE.MeshPhongMaterial({
 var pgeometry = new THREE.PlaneGeometry(580, 580);
 var pelement = new THREE.Mesh(pgeometry, pmaterial);
 pelement.rotation.x = Math.PI / 2;
-scene.add(pelement);
+scene.add(pelement);*/
+
+const geoFloor = new THREE.BoxGeometry(2000, 0.1, 2000);
+const matStdFloor = new THREE.MeshStandardMaterial({
+  color: 0xbcbcbc,
+  roughness: 0.1,
+  metalness: 0,
+});
+const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor);
+scene.add(mshStdFloor);
 
 const loader = new FontLoader();
 loader.load("./fonts/Overcome.json", function (font) {
-  const geometry = new TextGeometry("Savinien \nBarbotaud", {
+  const geometry = new TextGeometry("Hello \nWorld", {
     font: font,
     size: 8,
     depth: 10,
     curveSegments: 12,
   });
-
-  const textMesh = new THREE.Mesh(geometry, [
-    new THREE.MeshBasicMaterial({ color: 0x222222 }),
-    new THREE.MeshBasicMaterial({ color: 0x111111 }),
-  ]);
+  const materials = [
+    new THREE.MeshStandardMaterial({
+      color: 0x00ffff, // cyan clair
+      emissive: 0x00ffff, // même teinte que la couleur
+      emissiveIntensity: 4,
+      metalness: 0.2,
+      roughness: 0.3,
+    }),
+    new THREE.MeshStandardMaterial({
+      color: 0x00ffff, // bords plus sombres
+      emissive: 0x006666, // un peu de lumière sur les côtés aussi
+      emissiveIntensity: 2,
+      metalness: 0.2,
+      roughness: 0.3,
+    }),
+  ];
+  const textMesh = new THREE.Mesh(geometry, materials);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
-  textMesh.position.z = 25;
-  textMesh.position.y = -5;
-  textMesh.position.x = -10;
+  textMesh.position.set(-10, -5, 25);
   scene.add(textMesh);
 });
+
+const rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
+rectLight1.position.set(20, 5, 5);
+scene.add(rectLight1);
+
+const rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10);
+rectLight2.position.set(25, 5, 5);
+scene.add(rectLight2);
+
+const rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10);
+rectLight3.position.set(30, 5, 5);
+scene.add(rectLight3);
+
+scene.add(new RectAreaLightHelper(rectLight1));
+scene.add(new RectAreaLightHelper(rectLight2));
+scene.add(new RectAreaLightHelper(rectLight3));
 
 let targetRotationY = 0;
 let targetRotationZ = 0;
