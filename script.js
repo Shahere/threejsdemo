@@ -3,7 +3,11 @@ import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
-import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
+import { Reflector } from "three/addons/objects/Reflector.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -18,7 +22,6 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(12, 25, 5);
 //camera.position.set(30, 30, 30);
 //camera.position.set(50, 50, -50);
-//camera.position.set(0.1, 50, 0);
 camera.lookAt(0, 0, 0);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -27,6 +30,19 @@ document.body.appendChild(renderer.domElement);
 console.log(THREE.REVISION);
 
 RectAreaLightUniformsLib.init();
+
+var renderScene = new RenderPass(scene, camera);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(renderScene);
+composer.addPass(
+  new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.3, // strength
+    0.9, // radius
+    0.3 // threshold
+  )
+);
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
@@ -38,14 +54,14 @@ RectAreaLightUniformsLib.init();
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-const geoFloor = new THREE.BoxGeometry(2000, 0.1, 2000);
-const matStdFloor = new THREE.MeshStandardMaterial({
-  color: 0xbcbcbc,
-  roughness: 1,
-  metalness: 1,
+let geometry = new THREE.PlaneGeometry(100, 100);
+let groundMirror = new Reflector(geometry, {
+  clipBias: 0.003,
+  color: 0xb5b5b5,
 });
-const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor);
-scene.add(mshStdFloor);
+groundMirror.position.y = 0.5;
+groundMirror.rotateX(-Math.PI / 2);
+scene.add(groundMirror);
 
 const loader = new FontLoader();
 loader.load("./fonts/Overcome.json", function (font) {
@@ -53,22 +69,17 @@ loader.load("./fonts/Overcome.json", function (font) {
     font: font,
     size: 8,
     depth: 2,
-    curveSegments: 12,
   });
   const materials = [
     new THREE.MeshStandardMaterial({
-      color: 0x00ffff, // cyan clair
-      emissive: 0x00ffff, // même teinte que la couleur
+      color: 0xff0000, // cyan clair
+      emissive: 0xff0000, // même teinte que la couleur
       emissiveIntensity: 4,
-      metalness: 0.2,
-      roughness: 0.3,
     }),
     new THREE.MeshStandardMaterial({
-      color: 0x00ffff, // bords plus sombres
-      emissive: 0x006666, // un peu de lumière sur les côtés aussi
-      emissiveIntensity: 2,
-      metalness: 0.2,
-      roughness: 0.3,
+      color: 0xff0000, // bords plus sombres
+      emissive: 0x220000, // un peu de lumière sur les côtés aussi
+      emissiveIntensity: 1,
     }),
   ];
   const textMesh = new THREE.Mesh(geometry, materials);
@@ -76,33 +87,8 @@ loader.load("./fonts/Overcome.json", function (font) {
   textMesh.rotation.z = Math.PI / 2;
   textMesh.position.set(-10, 2, 25);
   scene.add(textMesh);
-
-  const rectLightUpper = new THREE.RectAreaLight(0x0000ff, 2, 10, 40);
-  rectLightUpper.position.set(3.5, 1, 6);
-  rectLightUpper.rotation.x = -Math.PI / 2;
-  scene.add(rectLightUpper);
-
-  const rectLightDown = new THREE.RectAreaLight(0x0000ff, 2, 10, 35);
-  rectLightDown.position.set(-14, 1, 9);
-  rectLightDown.rotation.x = -Math.PI / 2;
-  scene.add(rectLightDown);
+  textMesh.layers.enable(1);
 });
-
-const rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
-rectLight1.position.set(20, 5, 5);
-scene.add(rectLight1);
-
-const rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10);
-rectLight2.position.set(25, 5, 5);
-scene.add(rectLight2);
-
-const rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10);
-rectLight3.position.set(30, 5, 5);
-scene.add(rectLight3);
-
-scene.add(new RectAreaLightHelper(rectLight1));
-scene.add(new RectAreaLightHelper(rectLight2));
-scene.add(new RectAreaLightHelper(rectLight3));
 
 let targetRotationY = 0;
 let targetRotationZ = 0;
@@ -133,7 +119,8 @@ function animate() {
   velocityZ = velocityZ * damping + forceZ;
   scene.rotation.z += velocityZ;
 
-  renderer.render(scene, camera);
+  //renderer.render(scene, camera);
+  composer.render();
 }
 
 animate();
