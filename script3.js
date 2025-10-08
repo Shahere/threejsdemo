@@ -4,6 +4,10 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { RectAreaLightUniformsLib } from "three/addons/lights/RectAreaLightUniformsLib.js";
 import { Reflector } from "three/addons/objects/Reflector.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
@@ -27,6 +31,19 @@ console.log(THREE.REVISION);
 
 RectAreaLightUniformsLib.init();
 
+var renderScene = new RenderPass(scene, camera);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(renderScene);
+composer.addPass(
+  new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.3, // strength
+    0.9, // radius
+    0.3 // threshold
+  )
+);
+
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
 //scene.add(new THREE.AmbientLight(0xffffff, 10));
@@ -37,69 +54,50 @@ RectAreaLightUniformsLib.init();
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-scene.fog = null;
+let resolutionScale = 0.1;
+const size = new THREE.Vector2();
 
-const material = new THREE.MeshStandardMaterial({ color: 0x6699ff });
-material.onBeforeCompile = (shader) => {
-  // Add a varying to pass world position from vertex to fragment
-  shader.vertexShader = shader.vertexShader.replace(
-    "void main() {",
-    `
-    varying vec3 vWorldPosition;
-    void main() {
-      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-      vWorldPosition = worldPosition.xyz;
-    `
-  );
+renderer.getDrawingBufferSize(size);
+size.multiplyScalar(resolutionScale).round();
 
-  // Inject varying at the top of the fragment shader
-  shader.fragmentShader = shader.fragmentShader.replace(
-    "void main() {",
-    `
-    varying vec3 vWorldPosition;
-    void main() {
-    `
-  );
+let geometry = new THREE.PlaneGeometry(100, 100);
+let groundMirror = new Reflector(geometry, {
+  clipBias: 0.003,
+  textureWidth: size.width,
+  textureHeight: size.height,
+});
+groundMirror.position.y = 0.5;
+groundMirror.rotateX(-Math.PI / 2);
+scene.add(groundMirror);
 
-  // Replace fog fragment include with fog logic only
-  shader.fragmentShader = shader.fragmentShader.replace(
-    "#include <fog_fragment>",
-    `
-    float fogStartY = 2.0;
-    float fogEndY = -5.0; // How deep you want fog
-    float fogDensity = 0.75; // Strength
+renderer.getDrawingBufferSize(size);
+size.multiplyScalar(resolutionScale).round();
 
-    //float fogFactor = smoothstep(fogStartY, fogEndY, vWorldPosition.y);
-    float fogFactor = smoothstep(fogEndY, fogStartY, vWorldPosition.y);
-    fogFactor *= fogDensity;
+groundMirror.getRenderTarget().setSize(size.width, size.height);
 
-    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.7, 0.7, 0.7), fogFactor); // Fog color
-    `
-  );
-};
 const loader = new FontLoader();
 loader.load("./fonts/Overcome.json", function (font) {
   const geometry = new TextGeometry("Hello \nWorld", {
     font: font,
     size: 8,
-    depth: 200,
+    depth: 2,
   });
   const materials = [
     new THREE.MeshStandardMaterial({
-      color: 0x5a5a5a,
-      emissive: 0x5a5a5a,
-      emissiveIntensity: 3,
+      color: 0xff0000, // cyan clair
+      emissive: 0xff0000, // même teinte que la couleur
+      emissiveIntensity: 4,
     }),
     new THREE.MeshStandardMaterial({
-      color: 0x5a5a5a,
-      emissive: 0x5a5a5a,
-      emissiveIntensity: 3,
+      color: 0xff0000, // bords plus sombres
+      emissive: 0x220000, // un peu de lumière sur les côtés aussi
+      emissiveIntensity: 1,
     }),
   ];
-  const textMesh = new THREE.Mesh(geometry, material);
+  const textMesh = new THREE.Mesh(geometry, materials);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
-  textMesh.position.set(-10, -200, 25);
+  textMesh.position.set(-10, 2, 25);
   scene.add(textMesh);
   textMesh.layers.enable(1);
 });
@@ -133,7 +131,8 @@ function animate() {
   velocityZ = velocityZ * damping + forceZ;
   scene.rotation.z += velocityZ;
 
-  renderer.render(scene, camera);
+  //renderer.render(scene, camera);
+  composer.render();
 }
 
 animate();
