@@ -117,8 +117,8 @@ document.addEventListener("mousemove", (event) => {
   const x = event.clientX - centerX;
   const y = event.clientY - centerY;
 
-  targetRotationY = x * 0.00035;
-  targetRotationZ = y * -0.00035;
+  targetRotationY = x * 0.00025;
+  targetRotationZ = y * -0.0001;
 });
 
 function animate() {
@@ -137,3 +137,9 @@ function animate() {
 }
 
 animate();
+
+document.documentElement.style.cursor = "none";
+var cursor = document.getElementById("cursor");
+document.body.addEventListener("mousemove", function (e) {
+  (cursor.style.left = e.clientX + "px"), (cursor.style.top = e.clientY + "px");
+});
