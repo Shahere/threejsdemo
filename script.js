@@ -138,7 +138,7 @@ function animate() {
 
 animate();
 
-document.documentElement.style.cursor = "none";
+//document.documentElement.style.cursor = "none";
 var cursor = document.getElementById("cursor");
 document.body.addEventListener("mousemove", function (e) {
   (cursor.style.left = e.clientX + "px"), (cursor.style.top = e.clientY + "px");

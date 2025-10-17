@@ -45,7 +45,7 @@
 }
 .right {
     background-color: transparent;
-    width: 50%;
+    width: 45%;
 }
 
 .home {
@@ -60,6 +60,7 @@
     font-weight: bold;
     font-family: "Aventa", sans-serif;
     text-transform: uppercase;  
+    width: fit-content;
 }
 
 .frfr {
