@@ -3,6 +3,15 @@
     margin: 0;
 }
 
+@font-face {
+  font-family: "Aventa";
+  src: url("fonts/Aventa-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; 
+}
+
+
 .cursor {
   position: fixed;
   border-radius: 50%;
@@ -19,9 +28,20 @@
   transition: all 300ms ease-out;
 }
 
+.main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
 .left {
     background-color: transparent;
-    width: 50%;
+    width: 55%;
 }
 .right {
     background-color: transparent;
@@ -32,21 +52,26 @@
     background-color: red;
     color: white;
     padding-top: 10%;
-    padding-left: 15%;
+    padding-left: 5%;
 }
 
 .home_title {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: bold;
+    font-family: "Aventa", sans-serif;
+    text-transform: uppercase;  
 }
 
-.main {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.frfr {
     display: flex;
+}
+
+.posright {
+    justify-content: right;
+}
+.posleft {
+    justify-content: left;
+}
+.poscenter {
     justify-content: center;
-    flex-direction: row;
 }
