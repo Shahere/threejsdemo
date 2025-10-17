@@ -3,15 +3,6 @@
     margin: 0;
 }
 
-.black_ag {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85)
-}
-
 .cursor {
   position: fixed;
   border-radius: 50%;
@@ -26,4 +17,36 @@
   height: 15px;
   width: 15px;
   transition: all 300ms ease-out;
+}
+
+.left {
+    background-color: transparent;
+    width: 50%;
+}
+.right {
+    background-color: transparent;
+    width: 50%;
+}
+
+.home {
+    background-color: red;
+    color: white;
+    padding-top: 10%;
+    padding-left: 15%;
+}
+
+.home_title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
 }
