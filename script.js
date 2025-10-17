@@ -79,7 +79,7 @@ material.onBeforeCompile = (shader) => {
 };
 const loader = new FontLoader();
 loader.load("./fonts/Overcome.json", function (font) {
-  const geometry = new TextGeometry("Hello \nWorld", {
+  const geometry = new TextGeometry("web graphic \nexperiments", {
     font: font,
     size: 8,
     depth: 200,

@@ -49,22 +49,22 @@
 }
 
 .home {
-    background-color: red;
+    background-color: transparent;
     color: white;
-    padding-top: 10%;
+    padding-top: 5%;
     padding-left: 5%;
 }
 
 .home_title {
-    font-size: 2em;
-    font-weight: bold;
     font-family: "Aventa", sans-serif;
-    text-transform: uppercase;  
     width: fit-content;
 }
 
 .frfr {
     display: flex;
+    font-size: 2em;
+    font-weight: bold;
+    text-transform: uppercase;  
 }
 
 .posright {
@@ -75,4 +75,12 @@
 }
 .poscenter {
     justify-content: center;
+}
+
+.about {
+    font-weight: normal;
+    font-size: 0.7em;
+    padding-top: 5%;
+    text-align: right;
+    text-decoration: underline;
 }
