@@ -1,11 +1,12 @@
 * {
     padding: 0;
     margin: 0;
+    color: white;
 }
 
 @font-face {
   font-family: "Aventa";
-  src: url("fonts/Aventa-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Aventa-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap; 
@@ -13,12 +14,15 @@
 
 @font-face {
   font-family: "Arges";
-  src: url("fonts/Arges.otf") format("truetype");
+  src: url("assets/fonts/Arges.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap; 
 }
 
+.hidden {
+  display: none !important;
+}
 
 .cursor {
   position: fixed;
@@ -60,7 +64,6 @@
 
 .home {
     background-color: transparent;
-    color: white;
     padding-top: 5%;
     padding-left: 5%;
 }

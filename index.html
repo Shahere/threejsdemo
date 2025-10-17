@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="cursor" id="cursor"></div>
-    <div class="main">
+    <div class="main" id="homeView">
       <h1 class="left">
         <div class="home">
           <div class="home_title">
@@ -22,7 +22,9 @@
               <div class="">By Savinien</div>
             </div>
             <div class="about">
-              <a href="/about">More info about this project</a>
+              <a href="/about" id="aboutLink" class="no-deco"
+                >More info about this project</a
+              >
             </div>
           </div>
         </div>
@@ -43,8 +45,17 @@
         </div>
       </div>
     </div>
+
+    <div class="hidden main" id="aboutView">
+      <h2>À propos de ce projet</h2>
+      <p>
+        Ce site présente une collection d'expériences 3D créées par Savinien.
+      </p>
+      <a href="/" id="backHome" class="no-deco">Retour</a>
+    </div>
   </body>
   <script type="module" src="./script.js"></script>
   <script type="module" src="./scroll_container.js"></script>
   <script type="module" src="./cursor.js"></script>
+  <script type="module" src="./view.js"></script>
 </html>
