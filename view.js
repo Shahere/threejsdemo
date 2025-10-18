@@ -7,12 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
   aboutLink.addEventListener("click", (e) => {
     e.preventDefault();
     homeView.classList.add("hidden");
-    aboutView.classList.remove("hidden");
+    setTimeout(() => {
+      aboutView.classList.remove("hidden");
+    }, 600);
   });
 
   backHome.addEventListener("click", (e) => {
     e.preventDefault();
     aboutView.classList.add("hidden");
-    homeView.classList.remove("hidden");
+    setTimeout(() => {
+      homeView.classList.remove("hidden");
+    }, 600);
   });
 });
