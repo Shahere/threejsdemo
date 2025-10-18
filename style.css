@@ -42,6 +42,16 @@
     transition:all 0.3s ease-out;
 }
 
+.github {
+    position: fixed;
+    font-family: "Aventa", sans-serif;
+    rotate: -90deg;
+    top: 45%;
+    left: 1%;
+    font-size: 1.5em;
+    z-index: 10000;
+}
+
 .cursor--hover {
     width: 60px;
     height: 60px;
