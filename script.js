@@ -29,7 +29,7 @@ RectAreaLightUniformsLib.init();
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
-//scene.add(new THREE.AmbientLight(0xffffff, 10));
+scene.add(new THREE.AmbientLight(0xffffff, 1000));
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
@@ -37,69 +37,41 @@ RectAreaLightUniformsLib.init();
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-scene.fog = null;
-
-const material = new THREE.MeshStandardMaterial({ color: 0x6699ff });
-material.onBeforeCompile = (shader) => {
-  // Add a varying to pass world position from vertex to fragment
-  shader.vertexShader = shader.vertexShader.replace(
-    "void main() {",
-    `
-    varying vec3 vWorldPosition;
-    void main() {
-      vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-      vWorldPosition = worldPosition.xyz;
-    `
-  );
-
-  // Inject varying at the top of the fragment shader
-  shader.fragmentShader = shader.fragmentShader.replace(
-    "void main() {",
-    `
-    varying vec3 vWorldPosition;
-    void main() {
-    `
-  );
-
-  // Replace fog fragment include with fog logic only
-  shader.fragmentShader = shader.fragmentShader.replace(
-    "#include <fog_fragment>",
-    `
-    float fogStartY = 2.0;
-    float fogEndY = -5.0; // How deep you want fog
-    float fogDensity = 0.75; // Strength
-
-    //float fogFactor = smoothstep(fogStartY, fogEndY, vWorldPosition.y);
-    float fogFactor = smoothstep(fogEndY, fogStartY, vWorldPosition.y);
-    fogFactor *= fogDensity;
-
-    gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.7, 0.7, 0.7), fogFactor); // Fog color
-    `
-  );
-};
 const loader = new FontLoader();
 loader.load("./assets/fonts/Overcome.json", function (font) {
   const geometry = new TextGeometry("web graphic \nexperiments", {
     font: font,
     size: 8,
-    depth: 200,
+    depth: 5,
   });
-  const materials = [
-    new THREE.MeshStandardMaterial({
-      color: 0x5a5a5a,
-      emissive: 0x5a5a5a,
-      emissiveIntensity: 3,
-    }),
-    new THREE.MeshStandardMaterial({
-      color: 0x5a5a5a,
-      emissive: 0x5a5a5a,
-      emissiveIntensity: 3,
-    }),
-  ];
+  // 2. Calcul des bornes min/max en Y (hauteur du texte)
+  geometry.computeBoundingBox();
+  const minZ = geometry.boundingBox.min.z;
+  const maxZ = geometry.boundingBox.max.z;
+
+  const colors = [];
+  const colorTop = new THREE.Color(0xbbbbbb);
+  const colorBottom = new THREE.Color(0x000000);
+
+  const position = geometry.attributes.position;
+  for (let i = 0; i < position.count; i++) {
+    const z = position.getZ(i);
+    let t = (z - minZ) / (maxZ - minZ) - 0.4;
+    t = t * 0.5;
+    const color = colorBottom.clone().lerp(colorTop, t);
+    colors.push(color.r, color.g, color.b);
+  }
+
+  geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+
+  const material = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide,
+  });
   const textMesh = new THREE.Mesh(geometry, material);
   textMesh.rotation.x = -Math.PI / 2;
   textMesh.rotation.z = Math.PI / 2;
-  textMesh.position.set(-10, -200, 25);
+  textMesh.position.set(-10, 0, 25);
   scene.add(textMesh);
   textMesh.layers.enable(1);
 });
