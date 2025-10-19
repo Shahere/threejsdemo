@@ -148,7 +148,7 @@ a {
 
 .project_container--hover {
     color: transparent;
-    -webkit-text-stroke: 1px #ccc;
+    -webkit-text-stroke: 1.5px #ccc;
     transition: all 0.3s linear;
 }
 
