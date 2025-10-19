@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     color: white;
+    user-select: none;
 }
 
 @font-face {
@@ -63,6 +64,7 @@
     left: 1%;
     font-size: 1.5em;
     z-index: 10000;
+    cursor: none;
 }
 
 .main {
@@ -141,6 +143,13 @@ a {
     color: white;
     font-family: 'Arges', sans-serif;
     font-size: 12em;
+    transition: all 0.3s linear;
+}
+
+.project_container--hover {
+    color: transparent;
+    -webkit-text-stroke: 1px #ccc;
+    transition: all 0.3s linear;
 }
 
 .backHome {

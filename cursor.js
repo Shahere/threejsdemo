@@ -74,3 +74,19 @@ arr.forEach((color) => {
     });
   });
 });
+
+// Projects
+let divProjects = document.getElementById("scrollContainer");
+const children = Array.from(divProjects.children);
+
+children.forEach((project) => {
+  project.addEventListener("mouseenter", () => {
+    cursor.classList.add("cursor--hover");
+    project.classList.add("project_container--hover");
+  });
+
+  project.addEventListener("mouseleave", () => {
+    cursor.classList.remove("cursor--hover");
+    project.classList.remove("project_container--hover");
+  });
+});
