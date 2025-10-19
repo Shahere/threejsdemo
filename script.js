@@ -14,10 +14,15 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+
 camera.position.set(12, 25, 5);
 //camera.position.set(30, 30, 30);
 //camera.position.set(50, 50, -50);
 camera.lookAt(0, 0, 0);
+
+if (window.screen.width <= 600) {
+  camera.position.set(20, 30, 5);
+}
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -101,6 +106,7 @@ document.addEventListener("mousemove", (event) => {
   targetRotationZ = y * -0.0001;
 });
 
+let time = Date.now() * 0.001;
 function animate() {
   requestAnimationFrame(animate);
 
@@ -114,6 +120,16 @@ function animate() {
   scene.rotation.z += velocityZ;
 
   renderer.render(scene, camera);
+
+  if (window.screen.width <= 600) {
+    time = Date.now() * 0.0003;
+    scene.rotation.y = 0.05 * (1 + Math.sin(time));
+    camera.position.set(
+      20 + Math.sin(time) * 2,
+      30,
+      5 + 5 * Math.cos(time) * 5
+    );
+  }
 }
 
 animate();

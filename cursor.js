@@ -1,5 +1,8 @@
+if (window.screen.width > 600) {
+  document.documentElement.style.cursor = "none";
+}
+
 const cursor = document.querySelector(".cursor");
-document.documentElement.style.cursor = "none";
 
 document.addEventListener("mousemove", (e) => {
   cursor.style.left = e.clientX + "px";
