@@ -45,7 +45,7 @@
     }
 
     .poscenter {
-        color: orange;
+        color: rgba(255, 255, 255, 0.5);
     }
 
     .about {
@@ -54,11 +54,12 @@
         text-decoration: underline;
     }
 
-    .arrow {
+    .computer {
         position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translate(-50%);
+        bottom: 2%;
+        font-size: 0.33em;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
     }
 
     .github {
