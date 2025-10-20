@@ -121,7 +121,7 @@ function animate() {
 
   renderer.render(scene, camera);
 
-  if (window.screen.width <= 600) {
+  if (window.innerWidth < 1100) {
     time = Date.now() * 0.0003;
     scene.rotation.y = 0.05 * (1 + Math.sin(time));
     camera.position.set(
