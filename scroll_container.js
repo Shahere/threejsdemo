@@ -6,7 +6,7 @@ document.querySelector(".right").addEventListener("wheel", (e) => {
   posY -= e.deltaY; // deltaY = mouvement de la molette
 
   // Limites pour ne pas dépasser le contenu
-  const maxScroll = container.scrollHeight - container.clientHeight + 200;
+  const maxScroll = container.scrollHeight - container.clientHeight + 700;
   if (posY > 0) posY = 0;
   if (posY < -maxScroll) posY = -maxScroll;
 

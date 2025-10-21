@@ -136,7 +136,7 @@
 
     .container_right {
         padding-left: 10%;
-        padding-top: 14%;
+        padding-top: 50%;
         height: 100%;           
         transition: transform 0.3s ease-out; /* smoooooth operatooor */
     }

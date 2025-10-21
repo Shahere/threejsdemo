@@ -8,6 +8,7 @@ let red_button = document.getElementById("red");
 let blue_button = document.getElementById("blue");
 let grey_button = document.getElementById("grey");
 let black_button = document.getElementById("black");
+let scroll_container = document.getElementById("scrollContainer");
 
 red_button.addEventListener("click", function () {
   change_color(0xff0000, 0x000000);
@@ -132,13 +133,16 @@ document.addEventListener("mousemove", (event) => {
   targetRotationZ = y * -0.0001;
 });
 
-let flags = [];
-
+const group_flag = new THREE.Group();
 for (let i = 0; i < 5; i++) {
   let flag = createFlag(0, 7, i * -25);
-  flags.push(flag);
-  scene.add(flag);
+  group_flag.add(flag);
 }
+scene.add(group_flag);
+
+const box = new THREE.Box3().setFromObject(group_flag);
+const size = new THREE.Vector3();
+box.getSize(size);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -152,7 +156,7 @@ function animate() {
   velocityZ = velocityZ * damping + forceZ;
   scene.rotation.z += velocityZ;
 
-  flags.forEach((flag) => {
+  group_flag.children.forEach((flag) => {
     const h = 0; // Fréquence horizontale
     const v = 0.3; // Fréquence verticale
     const w = 0.2; // Amplitude
@@ -174,6 +178,14 @@ function animate() {
     // Indique à Three.js que les positions ont changé
     position.needsUpdate = true;
   });
+
+  //group_flag.position.lerp(targetPosition, smoothness_moving_flags);
+
+  const style = getComputedStyle(scroll_container);
+  const matrix = new DOMMatrixReadOnly(style.transform);
+  let MIN_VAL = -1147;
+  let curr_val = matrix.m42;
+  group_flag.position.z = (curr_val * (size.z - 20)) / MIN_VAL;
 
   renderer.render(scene, camera);
 
