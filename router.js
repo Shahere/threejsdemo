@@ -10,7 +10,6 @@ let main = document.getElementById("homeView");
 let phone_info = document.getElementsByClassName("computer");
 if (window.innerWidth <= 1100) {
   phone_info[0].classList.remove("hidden");
-  console.log("hekfpek");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
