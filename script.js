@@ -62,7 +62,7 @@ RectAreaLightUniformsLib.init();
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
-scene.add(new THREE.AmbientLight(0xffffff, 1000));
+scene.add(new THREE.AmbientLight(0xffffff, 5));
 
 /*--------------------------------------------- LIGHTS -------------------------------------------------*/
 
@@ -132,7 +132,14 @@ document.addEventListener("mousemove", (event) => {
   targetRotationZ = y * -0.0001;
 });
 
-let time = Date.now() * 0.001;
+let flags = [];
+
+for (let i = 0; i < 5; i++) {
+  let flag = createFlag(0, 7, i * -25);
+  flags.push(flag);
+  scene.add(flag);
+}
+
 function animate() {
   requestAnimationFrame(animate);
 
@@ -144,6 +151,29 @@ function animate() {
   const forceZ = (targetRotationZ - scene.rotation.z) * stiffness;
   velocityZ = velocityZ * damping + forceZ;
   scene.rotation.z += velocityZ;
+
+  flags.forEach((flag) => {
+    const h = 0; // Fréquence horizontale
+    const v = 0.3; // Fréquence verticale
+    const w = 0.2; // Amplitude
+    const s = 0.12; // Vitesse
+
+    const position = flag.geometry.attributes.position;
+    const count = position.count;
+
+    const time = (Date.now() * s) / 50;
+
+    for (let i = 0; i < count; i++) {
+      const x = position.getX(i);
+      const y = position.getY(i);
+
+      const z = (Math.sin(h * x + v * y - time) * w * x) / 4;
+      position.setZ(i, z);
+    }
+
+    // Indique à Three.js que les positions ont changé
+    position.needsUpdate = true;
+  });
 
   renderer.render(scene, camera);
 
@@ -204,4 +234,16 @@ function change_color(targetBg, targetText, duration = 500) {
   }
 
   requestAnimationFrame(animate);
+}
+
+function createFlag(x, y, z) {
+  let flag_geometry = new THREE.PlaneGeometry(10, 20, 10, 20);
+  let flag_material = new THREE.MeshLambertMaterial({
+    color: 0x777777,
+    side: THREE.DoubleSide,
+  });
+  let flag = new THREE.Mesh(flag_geometry, flag_material);
+  flag.rotation.x = -Math.PI / 2;
+  flag.position.set(x, y, z);
+  return flag;
 }
