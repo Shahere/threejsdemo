@@ -23,6 +23,15 @@ black_button.addEventListener("click", function () {
   change_color(0x000000, 0xbbbbbb);
 });
 
+const Projects = [
+  "./assets/img/projects/voxels.png",
+  "./assets/img/projects/lightbox.png",
+  "./assets/img/projects/earth.png",
+  "./assets/img/projects/physics.png",
+  "./assets/img/projects/fps.png",
+  "./assets/img/projects/fp.png",
+];
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.shadowMap.enabled = true;
 const scene = new THREE.Scene();
@@ -134,8 +143,8 @@ document.addEventListener("mousemove", (event) => {
 });
 
 const group_flag = new THREE.Group();
-for (let i = 0; i < 5; i++) {
-  let flag = createFlag(0, 7, i * -25);
+for (let i = 0; i < 6; i++) {
+  let flag = createFlag(0, 7, i * -25, i);
   group_flag.add(flag);
 }
 scene.add(group_flag);
@@ -248,7 +257,8 @@ function change_color(targetBg, targetText, duration = 500) {
   requestAnimationFrame(animate);
 }
 
-function createFlag(x, y, z) {
+let flagTexture = null;
+function createFlag(x, y, z, loop_indice) {
   let flag_geometry = new THREE.PlaneGeometry(10, 20, 10, 20);
   let flag_material = new THREE.MeshLambertMaterial({
     color: 0x777777,
@@ -257,5 +267,22 @@ function createFlag(x, y, z) {
   let flag = new THREE.Mesh(flag_geometry, flag_material);
   flag.rotation.x = -Math.PI / 2;
   flag.position.set(x, y, z);
+
+  const url = Projects[loop_indice];
+  const loader = new THREE.TextureLoader();
+  loader.load(url, (texture) => {
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
+
+    texture.center.set(0.5, 0.5);
+    texture.rotation = Math.PI / 2;
+
+    flag.material = new THREE.MeshLambertMaterial({
+      color: 0x777777,
+      map: texture,
+      side: THREE.DoubleSide,
+    });
+  });
+
   return flag;
 }
