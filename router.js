@@ -4,6 +4,7 @@ let fps = document.getElementById("fps");
 let fp = document.getElementById("fp");
 let physics = document.getElementById("physics");
 let lightbox = document.getElementById("lightbox");
+let drop = document.getElementById("drop");
 
 let main = document.getElementById("homeView");
 
@@ -20,6 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 500);
   }
 
+  drop.addEventListener("click", () => {
+    fadeAndGo("./drop_water/index.html");
+  });
   voxels.addEventListener("click", () => {
     fadeAndGo("./voxels/index.html");
   });

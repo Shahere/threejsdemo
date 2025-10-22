@@ -24,6 +24,7 @@ black_button.addEventListener("click", function () {
 });
 
 const Projects = [
+  "",
   "./assets/img/projects/voxels.png",
   "./assets/img/projects/lightbox.png",
   "./assets/img/projects/earth.png",
@@ -143,7 +144,7 @@ document.addEventListener("mousemove", (event) => {
 });
 
 const group_flag = new THREE.Group();
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 7; i++) {
   let flag = createFlag(0, 7, i * -25, i);
   group_flag.add(flag);
 }
