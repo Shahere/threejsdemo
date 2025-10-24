@@ -15,7 +15,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0.01, 20, 0);
+camera.position.set(0.01, 21, 0);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer();
@@ -34,7 +34,7 @@ material.clearcoat = 0.18;
 material.clearcoatRoughness = 0.25;
 material.color = new THREE.Color(0xffffff);
 material.ior = 1.2;
-material.thickness = 1.0;
+material.thickness = 0.7;
 
 const sphere = new THREE.Mesh(sphereGeometry, material);
 sphere.position.set(0, 17, 0);
