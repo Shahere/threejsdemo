@@ -27,14 +27,14 @@ document.body.appendChild(renderer.domElement);
 const icosahedronGeometry = new THREE.IcosahedronGeometry(1, 50);
 
 const material = new THREE.MeshPhysicalMaterial({});
-material.reflectivity = 0.23;
+material.reflectivity = 0;
 material.transmission = 1.0;
-material.roughness = 0.08;
+material.roughness = 0.1;
 material.metalness = 0;
-material.clearcoat = 0.18;
-material.clearcoatRoughness = 0.25;
+material.clearcoat = 0.1;
+material.clearcoatRoughness = 1;
 material.color = new THREE.Color(0xffffff);
-material.ior = 1.2;
+material.ior = 1.2; // The loop effect 1 = nothing
 material.thickness = 0.7;
 
 const icosahedron = new THREE.Mesh(icosahedronGeometry, material);
