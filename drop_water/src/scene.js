@@ -76,7 +76,7 @@ loader.load("../assets/fonts/Overcome.json", function (font) {
 
   main.rotation.x = -Math.PI / 2;
   main.rotation.z = Math.PI / 2;
-  main.position.set(0, 0, 17);
+  main.position.set(0, 5, 17);
   scene.add(main);
 });
 
