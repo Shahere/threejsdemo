@@ -10,10 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "postprocessing": "^6.37.8",
+    "three": "^0.180.0",
     "vite": "^6.2.6"
-  },
-  "overrides": {
-    "three": "0.180.0"
   }
 }

@@ -9,13 +9,7 @@
     "preview": "vite preview",
     "deploy": "gh-pages -d dist"
   },
-  "devDependencies": {
-    "gh-pages": "^6.1.1",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.12"
-  },
   "dependencies": {
-    "enable3d": "^0.25.4",
-    "three": "^0.156.1"
+    "three": "0.180.0"
   }
 }

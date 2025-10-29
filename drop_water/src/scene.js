@@ -1,4 +1,5 @@
 import * as THREE from "three";
+console.log(THREE.REVISION);
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
@@ -81,10 +82,10 @@ loader.load("../assets/fonts/Overcome.json", function (font) {
 });
 
 // Post processing setup :
-const composer = new EffectComposer(renderer);
+/*const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
 const glitchPass = new GlitchPass();
-composer.addPass(glitchPass);
+composer.addPass(glitchPass);*/
 
 window.addEventListener("resize", onWindowResize, false);
 function onWindowResize() {
@@ -124,7 +125,7 @@ function animate() {
   icosahedron.rotation.y += 0.005;
   icosahedron.rotation.x += 0.002;
   renderer.render(scene, camera);
-  composer.render();
+  //composer.render();
 }
 
 function render() {
