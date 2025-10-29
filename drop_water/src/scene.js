@@ -3,9 +3,13 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
 
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
+
 const loader = new FontLoader();
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xeeeeee);
+scene.background = new THREE.Color(0xcccccc);
 
 const light = new THREE.PointLight(0xffffff, 1000);
 light.position.set(10, 10, 10);
@@ -46,42 +50,41 @@ loader.load("../assets/fonts/Overcome.json", function (font) {
   text_geometry = new TextGeometry("web graphic experiments", {
     font: font,
     size: 2,
-    depth: 2,
+    depth: 0.1,
   });
-  // 2. Calcul des bornes min/max en Y (hauteur du texte)
-  text_geometry.computeBoundingBox();
-  const minZ = text_geometry.boundingBox.min.z;
-  const maxZ = text_geometry.boundingBox.max.z;
 
-  const colors = [];
-
-  const position = text_geometry.attributes.position;
-  for (let i = 0; i < position.count; i++) {
-    const z = position.getZ(i);
-    let t = (z - minZ) / (maxZ - minZ) - 0.4;
-    t = t * 0.5;
-    const color = new THREE.Color(0xff0000)
-      .clone()
-      .lerp(new THREE.Color(0x00ff00), t);
-    colors.push(color.r, color.g, color.b);
-  }
-
-  text_geometry.setAttribute(
-    "color",
-    new THREE.Float32BufferAttribute(colors, 3)
+  const main = new THREE.Mesh(
+    text_geometry,
+    new THREE.MeshBasicMaterial({ color: 0xff8c00 })
+  );
+  const red = new THREE.Mesh(
+    text_geometry,
+    new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      transparent: true,
+      opacity: 0.6,
+    })
+  );
+  const blue = new THREE.Mesh(
+    text_geometry,
+    new THREE.MeshBasicMaterial({
+      color: 0x00ffff,
+      transparent: true,
+      opacity: 0.6,
+    })
   );
 
-  const material = new THREE.MeshBasicMaterial({
-    vertexColors: true,
-    side: THREE.DoubleSide,
-  });
-  const textMesh = new THREE.Mesh(text_geometry, material);
-  textMesh.rotation.x = -Math.PI / 2;
-  textMesh.rotation.z = Math.PI / 2;
-  textMesh.position.set(0, 0, 17);
-  scene.add(textMesh);
-  textMesh.layers.enable(1);
+  main.rotation.x = -Math.PI / 2;
+  main.rotation.z = Math.PI / 2;
+  main.position.set(0, 0, 17);
+  scene.add(main);
 });
+
+// Post processing setup :
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const glitchPass = new GlitchPass();
+composer.addPass(glitchPass);
 
 window.addEventListener("resize", onWindowResize, false);
 function onWindowResize() {
@@ -108,7 +111,7 @@ function animate() {
     const z = base[ix + 2];
 
     const n = noise.noise(x * 1.2 + t * 0.5, y * 1.2 + t * 0.5, z * 1.2);
-    const factor = 1 + n * 0.1;
+    const factor = 1 + n * 0.2;
 
     pos.array[ix] = x * factor;
     pos.array[ix + 1] = y * factor;
@@ -121,6 +124,7 @@ function animate() {
   icosahedron.rotation.y += 0.005;
   icosahedron.rotation.x += 0.002;
   renderer.render(scene, camera);
+  composer.render();
 }
 
 function render() {
