@@ -203,6 +203,7 @@ function animate() {
 
   renderer.render(scene, camera);
 
+  let time;
   if (window.innerWidth < 1100) {
     time = Date.now() * 0.0003;
     scene.rotation.y = 0.05 * (1 + Math.sin(time));
