@@ -124,6 +124,9 @@ loader.load("./assets/fonts/Overcome.json", function (font) {
   textMesh.position.set(-10, 0, 25);
   scene.add(textMesh);
   textMesh.layers.enable(1);
+
+  //This thing take sooo much time to load
+  document.getElementById("page-loader").classList.add("hidden");
 });
 
 let targetRotationY = 0;

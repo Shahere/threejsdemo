@@ -260,7 +260,7 @@
       justify-content: center;
       background: rgba(0,0,0,1);
       z-index: 10000;
-      transition: opacity 300ms ease, visibility 300ms ease;
+      transition: opacity 1s ease, visibility 1s ease;
       visibility: visible;
       opacity: 1;
     }
