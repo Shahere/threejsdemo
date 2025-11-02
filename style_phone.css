@@ -38,7 +38,7 @@
     .home_title {
         font-size: 1.5em;
         padding: 5%;
-        padding-top: 40%;
+        padding-top: 30%;
         display: block;
         text-align: center;
         height: 70%;
@@ -68,5 +68,76 @@
 
     .right {
         display: none;
+    }
+
+
+    /*PAGE LOADER*/
+     #page-loader {
+      position: fixed;
+      inset: 0; /* top:0;right:0;bottom:0;left:0; */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,1);
+      z-index: 10000;
+      transition: opacity 1s ease, visibility 1s ease;
+      visibility: visible;
+      opacity: 1;
+    }
+    #page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-box {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* HTML: <div class="loader"></div> */
+    .spinner {
+      --s: 25px;
+    
+      --_d: calc(0.353*var(--s));
+      width: calc(var(--s) + var(--_d));
+      aspect-ratio: 1;
+      display: grid;
+    }
+    .spinner:before,
+    .spinner:after {
+      content:"";
+      clip-path:polygon(var(--_d) 0,100% 0,100% calc(100% - var(--_d)),calc(100% - var(--_d)) 100%,0 100%,0 var(--_d));
+      background:
+        conic-gradient(from -90deg at var(--s) var(--_d),
+         #fff 135deg,#666 0 270deg,#aaa 0);
+      animation: l4 1.2s infinite;
+    }
+    .spinner:before {
+      z-index: 1;
+      margin-bottom: calc(var(--_d)/-2 - 1px);
+    }
+    .spinner:after {
+      margin-top: calc(var(--_d)/-2 - 1px);
+      animation-delay: 0.6s
+    }
+    @keyframes l4{
+      0%     {transform: translate(0)}
+      16.67% {transform: translate(-10px)}
+      33.33% {transform: translate(10px)}
+      50%,
+      100%   {transform: translate(0)}
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loader-text {
+      font-family: 'Aventa', Arial;
+      font-size: 2em;
+      margin-top: 20%;
     }
 }
