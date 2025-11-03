@@ -7,8 +7,11 @@ let lightbox = document.getElementById("lightbox");
 let drop = document.getElementById("drop");
 
 let main = document.getElementById("homeView");
+let white_screen = document.getElementsByClassName("white-loader")[0];
 
 let phone_info = document.getElementsByClassName("computer");
+
+//TODO mettre ça dans un listener resize
 if (window.innerWidth <= 1100) {
   phone_info[0].classList.remove("hidden");
 }
@@ -16,9 +19,13 @@ if (window.innerWidth <= 1100) {
 document.addEventListener("DOMContentLoaded", () => {
   function fadeAndGo(url) {
     main.classList.add("hidden");
+    white_screen.classList.remove("hidden");
+    setTimeout(() => {
+      white_screen.classList.add("hidden");
+    }, 3000);
     setTimeout(() => {
       window.location.href = url;
-    }, 500);
+    }, 1000);
   }
 
   drop.addEventListener("click", () => {
