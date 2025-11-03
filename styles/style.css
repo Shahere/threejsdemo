@@ -9,7 +9,7 @@
 
     @font-face {
         font-family: "Aventa";
-        src: url("assets/fonts/Aventa-Regular.ttf") format("truetype");
+        src: url("../assets/fonts/Aventa-Regular.ttf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap; 
@@ -17,7 +17,7 @@
 
     @font-face {
         font-family: "Arges";
-        src: url("assets/fonts/Arges.otf") format("truetype");
+        src: url("../assets/fonts/Arges.otf") format("truetype");
         font-weight: normal;
         font-style: normal;
         font-display: swap; 
