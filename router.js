@@ -29,24 +29,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   drop.addEventListener("click", () => {
-    fadeAndGo("./drop_water/index.html");
+    fadeAndGo("./projects/drop_water/index.html");
   });
   voxels.addEventListener("click", () => {
-    fadeAndGo("./voxels/index.html");
+    fadeAndGo("./projects/voxels/index.html");
   });
   earth.addEventListener("click", () => {
-    fadeAndGo("./earthspin/index.html");
+    fadeAndGo("./projects/earthspin/index.html");
   });
   fps.addEventListener("click", () => {
-    fadeAndGo("./firstpersonshooter/index.html");
+    fadeAndGo("./projects/firstpersonshooter/index.html");
   });
   fp.addEventListener("click", () => {
-    fadeAndGo("./firstperson/index.html");
+    fadeAndGo("./projects/firstperson/index.html");
   });
   physics.addEventListener("click", () => {
-    fadeAndGo("./physics/index.html");
+    fadeAndGo("./projects/physics/index.html");
   });
   lightbox.addEventListener("click", () => {
-    fadeAndGo("./lightBox/index.html");
+    fadeAndGo("./projects/lightBox/index.html");
   });
 });

@@ -47,7 +47,7 @@ icosahedron.position.set(0, 17, 0);
 scene.add(icosahedron);
 
 let text_geometry;
-loader.load("../assets/fonts/Overcome.json", function (font) {
+loader.load("../../assets/fonts/Overcome.json", function (font) {
   text_geometry = new TextGeometry("web graphic experiments", {
     font: font,
     size: 2,
