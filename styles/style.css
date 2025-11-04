@@ -250,6 +250,37 @@
         background-color: lightgray;
     }
 
+    /*ABOUT VIEW*/
+    #aboutView {
+        display: flex;
+        flex-direction: column; /*Override .main rules*/
+
+    }
+
+    #aboutView > .infoContainer {
+        background-color: transparent;
+        padding-left: 10%;
+        padding-right: 10%;
+        font-family: 'Aventa', Arial;
+    }
+
+    .aboutText {
+        font-size: 3.5em;
+        margin-top: 4%;
+    }
+
+    .aboutText_1 {
+        margin-left: 1%;
+    }
+    .aboutText_2 {
+        margin-left: 20%;
+        color: #ccc;
+        opacity: 0.8;
+    }
+    .aboutText_3 {
+        margin-left: 10%;
+    }
+
 
     /*PAGE LOADER*/
      #page-loader {

@@ -70,6 +70,59 @@
         display: none;
     }
 
+    /*ABOUT VIEW*/
+    #aboutView {
+        display: flex;
+        flex-direction: column; /*Override .main rules*/
+        justify-content: center;
+    }
+
+    #aboutView > .infoContainer {
+        background-color: transparent;
+        padding-left: 10%;
+        padding-right: 10%;
+        font-family: 'Aventa', Arial;
+    }
+
+    .aboutText {
+        font-size: 3.5em;
+        margin-top: 4%;
+    }
+
+    .aboutText_1 {
+        margin-left: 1%;
+    }
+    .aboutText_2 {
+        margin-left: 20%;
+        color: #ccc;
+        opacity: 0.8;
+    }
+    .aboutText_3 {
+        margin-left: 10%;
+    }
+
+    .backHome {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding-top: 2%;
+        padding-left: 2%;
+        width: fit-content;
+        font-family: "Aventa", sans-serif;
+        font-size: 3em;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .backHome > div {
+      width: fit-content;
+    }
+
+    .flexalign {
+        display: flex;
+        justify-content: space-around;
+        gap: 10px;
+    }
 
     /*PAGE LOADER*/
      #page-loader {
