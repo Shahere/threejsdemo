@@ -24,6 +24,7 @@ black_button.addEventListener("click", function () {
 });
 
 const Projects = [
+  "./assets/img/projects/paris.png",
   "./assets/img/projects/drop.png",
   "./assets/img/projects/voxels.png",
   "./assets/img/projects/lightbox.png",
@@ -147,7 +148,7 @@ document.addEventListener("mousemove", (event) => {
 });
 
 const group_flag = new THREE.Group();
-for (let i = 0; i < 7; i++) {
+for (let i = 0; i < 8; i++) {
   let flag = createFlag(0, 7, i * -25, i);
   group_flag.add(flag);
 }
@@ -188,17 +189,14 @@ function animate() {
       position.setZ(i, z);
     }
 
-    // Indique à Three.js que les positions ont changé
     position.needsUpdate = true;
   });
 
-  //group_flag.position.lerp(targetPosition, smoothness_moving_flags);
-
   const style = getComputedStyle(scroll_container);
   const matrix = new DOMMatrixReadOnly(style.transform);
-  let MIN_VAL = -1377;
+  let MIN_VAL = -1607;
   let curr_val = matrix.m42;
-  //console.log(curr_val); // Il faut decommenter cette ligne pour avoir la min_val
+  console.log(curr_val); // Il faut decommenter cette ligne pour avoir la min_val
   group_flag.position.z = (curr_val * (size.z - 20)) / MIN_VAL;
 
   renderer.render(scene, camera);
