@@ -1,3 +1,7 @@
+src/ltf.bin
+src/paris.obj
+src/scene.gltf
+
 # Logs
 logs
 *.log
