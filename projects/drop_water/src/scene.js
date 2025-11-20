@@ -4,10 +4,6 @@ import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { ImprovedNoise } from "three/examples/jsm/math/ImprovedNoise.js";
 
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass.js";
-
 const loader = new FontLoader();
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xcccccc);
@@ -80,12 +76,6 @@ loader.load("../../assets/fonts/Overcome.json", function (font) {
   main.position.set(0, 5, 17);
   scene.add(main);
 });
-
-// Post processing setup :
-/*const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-const glitchPass = new GlitchPass();
-composer.addPass(glitchPass);*/
 
 window.addEventListener("resize", onWindowResize, false);
 function onWindowResize() {

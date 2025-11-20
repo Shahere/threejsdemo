@@ -7,4 +7,8 @@ export default defineConfig({
     port: 5173,
     allowedHosts: ["three.savinienbarbotaud.fr"],
   },
+  resolve: {
+    dedupe: ["three"],
+  },
+  // pour que ce CON de vite ne crée pas 9568962548 instances de threeJS j'en ai AUCUNE IDEE POURQUOI
 });
