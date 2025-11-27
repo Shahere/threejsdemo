@@ -12,7 +12,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(0, 21, 0);
+camera.position.set(0, 40, 0);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -20,18 +20,18 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const principalLight = new THREE.PointLight(0x00ff00, 50);
+const principalLight = new THREE.PointLight(0x00ff00, 100);
 const principalLightHelper = new THREE.PointLightHelper(principalLight);
 principalLight.position.set(0, 0, 0);
 scene.add(principalLight);
-scene.add(principalLightHelper);
+//scene.add(principalLightHelper);
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.02);
 scene.add(ambientLight);
 
 const material = new THREE.MeshStandardMaterial();
 material.color = new THREE.Color(0xffffff);
-const geometry = new THREE.BoxGeometry();
+const geometry = new THREE.BoxGeometry(0.7, 0.7, 0.7);
 
 function getCube() {
   const mesh = new THREE.Mesh(geometry, material);
@@ -39,7 +39,7 @@ function getCube() {
 }
 
 function getRandomSpherePoint({ radius = 10 }) {
-  const minRadius = 3;
+  const minRadius = 11;
   const maxRadius = radius - minRadius;
   const range = Math.random() * maxRadius + minRadius;
   const u = Math.random();
@@ -52,10 +52,12 @@ function getRandomSpherePoint({ radius = 10 }) {
     z: range * Math.cos(phi),
   };
 }
-
-function getLayout(numBoxes = 500, radius = 100) {
+const cubeGroup = new THREE.Group();
+const rotationSpeeds = [];
+function getLayout(numBoxes = 5000, radius = 100) {
   for (let i = 0; i < numBoxes; i++) {
     const box = getCube();
+    cubeGroup.add(box);
     //Reste bien pour de la position random sous forme de cube
     /*
     box.position.x = Math.random() * radius - radius * 0.5;
@@ -66,8 +68,14 @@ function getLayout(numBoxes = 500, radius = 100) {
     //Position en forme de sphere
     const { x, y, z } = getRandomSpherePoint({ radius });
     box.position.set(x, y, z);
-    scene.add(box);
+
+    const rotate1 = Math.random() * 0.02 - 0.01;
+    const rotate2 = Math.random() * 0.02 - 0.01;
+    const rotate3 = Math.random() * 0.02 - 0.01;
+    rotationSpeeds.push(new THREE.Vector3(rotate1, rotate2, rotate3));
+    //box.rotation.set(new THREE.Vector3(rotate1, rotate2, rotate3));
   }
+  scene.add(cubeGroup);
 }
 getLayout();
 
@@ -79,9 +87,24 @@ function onWindowResize() {
   render();
 }
 
-function animate() {
+function animate(time) {
   requestAnimationFrame(animate);
   controls.update();
+
+  var h = (time * 0.0002) % 1;
+  var s = 0.5;
+  var l = 0.5;
+  principalLight.color.setHSL(h, s, l);
+
+  cubeGroup.rotateX(Math.PI * 0.0001);
+  cubeGroup.rotateZ(-Math.PI * 0.0003);
+
+  cubeGroup.children.forEach((cube, i) => {
+    cube.rotation.x += rotationSpeeds[i].x;
+    cube.rotation.y += rotationSpeeds[i].y;
+    cube.rotation.z += rotationSpeeds[i].z;
+  });
+
   renderer.render(scene, camera);
 }
 
