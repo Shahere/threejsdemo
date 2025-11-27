@@ -29,12 +29,19 @@ scene.add(principalLight);
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.02);
 scene.add(ambientLight);
 
-const material = new THREE.MeshStandardMaterial();
-material.color = new THREE.Color(0xffffff);
-const geometry = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+const standardMaterial = new THREE.MeshStandardMaterial();
+standardMaterial.color = new THREE.Color(0xffffff);
+const basicMaterial = new THREE.MeshBasicMaterial();
+const boxGeometry = new THREE.BoxGeometry(0.7, 0.7, 0.7);
+const edgeGeometry = new THREE.EdgesGeometry(boxGeometry);
 
 function getCube() {
-  const mesh = new THREE.Mesh(geometry, material);
+  const mesh = new THREE.Mesh(boxGeometry, standardMaterial);
+  return mesh;
+}
+
+function getGlowCube() {
+  const mesh = new THREE.LineSegments(edgeGeometry, basicMaterial);
   return mesh;
 }
 
@@ -73,7 +80,10 @@ function getLayout(numBoxes = 5000, radius = 100) {
     const rotate2 = Math.random() * 0.02 - 0.01;
     const rotate3 = Math.random() * 0.02 - 0.01;
     rotationSpeeds.push(new THREE.Vector3(rotate1, rotate2, rotate3));
-    //box.rotation.set(new THREE.Vector3(rotate1, rotate2, rotate3));
+
+    box.rotation.x = Math.random();
+    box.rotation.y = Math.random();
+    box.rotation.z = Math.random();
   }
   scene.add(cubeGroup);
 }
