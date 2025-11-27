@@ -24,7 +24,7 @@ black_button.addEventListener("click", function () {
 });
 
 const Projects = [
-  "./assets/img/projects/paris.png",
+  "./assets/img/projects/spacecube.png",
   "./assets/img/projects/drop.png",
   "./assets/img/projects/voxels.png",
   "./assets/img/projects/lightbox.png",

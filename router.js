@@ -5,7 +5,7 @@ let fp = document.getElementById("fp");
 let physics = document.getElementById("physics");
 let lightbox = document.getElementById("lightbox");
 let drop = document.getElementById("drop");
-let paris = document.getElementById("paris");
+let spacecube = document.getElementById("spacecube");
 
 let main = document.getElementById("homeView");
 let white_screen = document.getElementsByClassName("white-loader")[0];
@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
-  paris.addEventListener("click", () => {
-    fadeAndGo("./projects/paris/index.html");
+  spacecube.addEventListener("click", () => {
+    fadeAndGo("./projects/spacecube/index.html");
   });
   drop.addEventListener("click", () => {
     fadeAndGo("./projects/drop_water/index.html");
