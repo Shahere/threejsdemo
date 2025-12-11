@@ -24,6 +24,7 @@ black_button.addEventListener("click", function () {
 });
 
 const Projects = [
+  "./assets/img/projects/joshuadavis.png",
   "./assets/img/projects/spacecube.png",
   "./assets/img/projects/drop.png",
   "./assets/img/projects/voxels.png",
@@ -148,7 +149,8 @@ document.addEventListener("mousemove", (event) => {
 });
 
 const group_flag = new THREE.Group();
-for (let i = 0; i < 8; i++) {
+let nbflags = 9;
+for (let i = 0; i < nbflags; i++) {
   let flag = createFlag(0, 7, i * -25, i);
   group_flag.add(flag);
 }
@@ -194,9 +196,9 @@ function animate() {
 
   const style = getComputedStyle(scroll_container);
   const matrix = new DOMMatrixReadOnly(style.transform);
-  let MIN_VAL = -1607;
+  let MIN_VAL = -1805;
   let curr_val = matrix.m42;
-  console.log(curr_val); // Il faut decommenter cette ligne pour avoir la min_val
+  //console.log(curr_val); // Il faut decommenter cette ligne pour avoir la min_val
   group_flag.position.z = (curr_val * (size.z - 20)) / MIN_VAL;
 
   renderer.render(scene, camera);

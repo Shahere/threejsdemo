@@ -6,6 +6,7 @@ let physics = document.getElementById("physics");
 let lightbox = document.getElementById("lightbox");
 let drop = document.getElementById("drop");
 let spacecube = document.getElementById("spacecube");
+let joshuadavis = document.getElementById("joshuadavis");
 
 let main = document.getElementById("homeView");
 let white_screen = document.getElementsByClassName("white-loader")[0];
@@ -29,6 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   }
 
+  joshuadavis.addEventListener("click", () => {
+    fadeAndGo("./projects/joshuadavis/index.html");
+  });
   spacecube.addEventListener("click", () => {
     fadeAndGo("./projects/spacecube/index.html");
   });
