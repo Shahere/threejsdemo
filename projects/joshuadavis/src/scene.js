@@ -1,8 +1,9 @@
 import * as THREE from "three";
 console.log(THREE.REVISION);
 import { OrbitControls } from "three/examples/jsm/Addons.js";
-import { EffectComposer } from "three/examples/jsm/Addons.js";
-import { SSAOPass } from "three/examples/jsm/Addons.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
 
 const scene = new THREE.Scene();
 
@@ -12,7 +13,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(50, 0, 0);
+camera.position.set(100, 0, 0);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -32,7 +33,7 @@ const ssaopass = new SSAOPass(
 );
 ssaopass.kernelRadius = 0.25;
 ssaopass.minDistance = 0.00001;
-ssaopass.maxDistance = 1;
+ssaopass.maxDistance = 0.01;
 ssaopass.output = SSAOPass.OUTPUT.Default;
 composer.addPass(ssaopass);
 
