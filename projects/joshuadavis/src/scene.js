@@ -1,6 +1,8 @@
 import * as THREE from "three";
 console.log(THREE.REVISION);
 import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { EffectComposer } from "three/examples/jsm/Addons.js";
+import { SSAOPass } from "three/examples/jsm/Addons.js";
 
 const scene = new THREE.Scene();
 
@@ -21,6 +23,19 @@ const controls = new OrbitControls(camera, renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
+const composer = new EffectComposer(renderer);
+const ssaopass = new SSAOPass(
+  scene,
+  camera,
+  window.innerWidth,
+  window.innerHeight
+);
+ssaopass.kernelRadius = 0.25;
+ssaopass.minDistance = 0.00001;
+ssaopass.maxDistance = 1;
+ssaopass.output = SSAOPass.OUTPUT.Default;
+composer.addPass(ssaopass);
+
 const boxGroup = new THREE.Group();
 scene.add(boxGroup);
 
@@ -29,9 +44,11 @@ const startPos = {
   z: -2,
 };
 const boxGeometry = new THREE.BoxGeometry();
+const palette = [0x2b2b42, 0x8d99ae, 0xedf2f4, 0xef233c, 0xd90426];
 
-function getBox({ size = 1, x = 0, y = 0, z = 0, color = 0xff0000 }) {
-  const standardMaterial = new THREE.MeshStandardMaterial(color);
+function getBox({ size = 1, x = 0, y = 0, z = 0, hex = 0xff0000 }) {
+  const color = new THREE.Color(hex);
+  const standardMaterial = new THREE.MeshBasicMaterial({ color });
   const cube = new THREE.Mesh(boxGeometry, standardMaterial);
   cube.position.y = startPos.y + y;
   cube.position.z = startPos.z + z;
@@ -41,19 +58,24 @@ function getBox({ size = 1, x = 0, y = 0, z = 0, color = 0xff0000 }) {
   return cube;
 }
 
-function getLayers(x = 0) {
+function getLayers({ x = 0, useRandomSize = false }) {
   const gridSize = 5;
   for (let y = 0; y < gridSize; y++) {
     for (let z = 0; z < gridSize; z++) {
-      const hex = Math.random() * 0xffffff;
-      const box = getBox({ size: 0.5, x, y, z, hex });
+      const randomIndex = Math.floor(Math.random() * palette.length);
+      const hex = palette[randomIndex];
+      let size = 1.5;
+      if (useRandomSize) {
+        size = Math.random() * 1.5 + 0.25;
+      }
+      const box = getBox({ size, x, y, z, hex });
       boxGroup.add(box);
     }
   }
 }
 
-getLayers(0);
-getLayers(1);
+getLayers({ x: 0 });
+getLayers({ x: 1, useRandomSize: true });
 
 window.addEventListener("resize", onWindowResize, false);
 function onWindowResize() {
@@ -67,7 +89,7 @@ function animate(time) {
   requestAnimationFrame(animate);
   controls.update();
 
-  renderer.render(scene, camera);
+  composer.render(scene, camera);
 }
 
 function render() {
