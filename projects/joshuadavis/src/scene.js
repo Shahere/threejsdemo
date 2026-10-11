@@ -4,6 +4,7 @@ import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { SSAOPass } from "three/examples/jsm/postprocessing/SSAOPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 const scene = new THREE.Scene();
 
@@ -11,7 +12,7 @@ const camera = new THREE.PerspectiveCamera(
   10,
   window.innerWidth / window.innerHeight,
   0.1,
-  1000
+  1000,
 );
 camera.position.set(100, 0, 0);
 camera.lookAt(0, 0, 0);
@@ -25,17 +26,24 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
 const composer = new EffectComposer(renderer);
+
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
 const ssaopass = new SSAOPass(
   scene,
   camera,
   window.innerWidth,
-  window.innerHeight
+  window.innerHeight,
 );
 ssaopass.kernelRadius = 0.25;
 ssaopass.minDistance = 0.00001;
 ssaopass.maxDistance = 0.01;
 ssaopass.output = SSAOPass.OUTPUT.Default;
 composer.addPass(ssaopass);
+
+const outputPass = new OutputPass();
+composer.addPass(outputPass);
 
 const boxGroup = new THREE.Group();
 scene.add(boxGroup);
@@ -80,21 +88,19 @@ getLayers({ x: 1, useRandomSize: true });
 
 window.addEventListener("resize", onWindowResize, false);
 function onWindowResize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  render();
+  renderer.setSize(width, height);
+  composer.setSize(width, height);
 }
 
-function animate(time) {
+function animate() {
   requestAnimationFrame(animate);
   controls.update();
-
-  composer.render(scene, camera);
-}
-
-function render() {
-  renderer.render(scene, camera);
+  composer.render();
+  //renderer.render(scene, camera);
 }
 
 animate();
