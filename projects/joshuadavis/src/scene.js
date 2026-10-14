@@ -14,7 +14,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000,
 );
-camera.position.set(100, 0, 0);
+camera.position.set(50, 0, 0);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -36,9 +36,10 @@ const ssaopass = new SSAOPass(
   window.innerWidth,
   window.innerHeight,
 );
-ssaopass.kernelRadius = 0.25;
-ssaopass.minDistance = 0.00001;
-ssaopass.maxDistance = 0.01;
+ssaopass.kernelRadius = 1;
+ssaopass.minDistance = 0.0000001;
+ssaopass.maxDistance = 1;
+
 ssaopass.output = SSAOPass.OUTPUT.Default;
 composer.addPass(ssaopass);
 
@@ -61,9 +62,10 @@ function getBox({ size = 1, x = 0, y = 0, z = 0, hex = 0xff0000 }) {
   const cube = new THREE.Mesh(boxGeometry, standardMaterial);
   cube.position.y = startPos.y + y;
   cube.position.z = startPos.z + z;
-  cube.position.x = x;
+  cube.position.x = (0.2 + x) * (Math.random() * (1 - 0.5) + 0.5);
   cube.rotation.x = Math.PI * 0.25;
   cube.scale.setScalar(size);
+  //(Math.random() * (1 - 0.5) + 0.5)
   return cube;
 }
 
